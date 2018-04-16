@@ -1,0 +1,49 @@
+# pull core image.
+FROM centos:7
+
+# install epel repo.
+RUN set -x \
+  && yum install -y epel-release \
+  && yum update -y
+
+# install system packages.
+RUN set -x \
+  && yum install -y wget vim net-tools initscripts gcc make tar \
+  && yum install -y python-devel python-setuptools \
+  && easy_install supervisor pip \
+  && mkdir /etc/supervisord.d
+
+# switch work directory.
+WORKDIR /tmp
+
+# install oracle java development kit.
+COPY downloads/jdk-8u131-linux-x64.rpm ./
+RUN set -x \
+  && rpm -Uvh jdk-8u131-linux-x64.rpm \
+  && rm -rf jdk-8u131-linux-x64.rpm
+
+# create user named logstash.
+RUN set -x \
+  && useradd -m -s /bin/bash -d /usr/local/lib/logstash logstash
+
+# install logstash.
+COPY downloads/logstash-6.2.3.tar.gz ./
+RUN set -x \
+  && tar xvzf logstash-6.2.3.tar.gz > /dev/null \
+  && cp -r logstash-6.2.3/* /usr/local/lib/logstash/ \
+  && rm -rf logstash-6.2.3.tar.gz logstash-6.2.3
+RUN set -x \
+  && mkdir /opt/logstash \
+  && mkdir /opt/logstash/data \
+  && mkdir /opt/logstash/log \
+  && mkdir /opt/logstash/system \
+  && touch /opt/logstash/system/process.pid
+
+# change ownership of logstash directories.
+RUN set -x \
+  && chown -R logstash:logstash /usr/local/lib/logstash \
+  && chown -R logstash:logstash /opt/logstash
+
+# switch user and work directory.
+USER root
+WORKDIR /

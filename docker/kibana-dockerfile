@@ -1,0 +1,50 @@
+# pull core image.
+FROM centos:7
+
+# install epel repo.
+RUN set -x \
+  && yum install -y epel-release \
+  && yum update -y
+
+# install system packages.
+RUN set -x \
+  && yum install -y wget vim net-tools initscripts gcc make tar \
+  && yum install -y python-devel python-setuptools \
+  && easy_install supervisor pip \
+  && mkdir /etc/supervisord.d
+
+# switch work directory.
+WORKDIR /tmp
+
+# create user named kibana.
+RUN set -x \
+  && useradd -m -s /bin/bash -d /usr/local/lib/kibana kibana
+
+# install kibana.
+COPY downloads/kibana-6.2.3-linux-x86_64.tar.gz ./
+RUN set -x \
+  && sha1sum kibana-6.2.3-linux-x86_64.tar.gz \
+  && tar xvzf kibana-6.2.3-linux-x86_64.tar.gz > /dev/null \
+  && cp -r kibana-6.2.3-linux-x86_64/* /usr/local/lib/kibana/ \
+  && rm -rf kibana-6.2.3-linux-x86_64.tar.gz kibana-6.2.3-linux-x86_64
+RUN set -x \
+  && mkdir /opt/kibana \
+  && mkdir /opt/kibana/data \
+  && mkdir /opt/kibana/log \
+  && touch /opt/kibana/log/stdout.log \
+  && mkdir /opt/kibana/system \
+  && touch /opt/kibana/system/process.pid
+
+# change ownership of kibana directories.
+RUN set -x \
+  && chown -R kibana:kibana /usr/local/lib/kibana \
+  && chown -R kibana:kibana /opt/kibana
+
+# install required plugins for kibana.
+USER kibana
+WORKDIR /usr/local/lib/kibana
+RUN ./bin/kibana-plugin install x-pack
+
+# switch user and work directory.
+USER root
+WORKDIR /

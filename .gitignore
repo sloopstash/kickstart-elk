@@ -1,0 +1,5 @@
+downloads/jdk-*
+downloads/*.rpm
+downloads/*.tar.gz
+downloads/*.zip
+tmp/*

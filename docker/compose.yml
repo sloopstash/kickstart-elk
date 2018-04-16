@@ -1,0 +1,64 @@
+version: '3'
+services:
+  elk-es-node:
+    image: elk/elasticsearch:6.2.3
+    container_name: elk-es-node
+    privileged: true
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-es-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-elk/supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
+      - /opt/kickstart-elk/elasticsearch/conf/kernel.conf:/etc/sysctl.d/90-elasticsearch.conf
+      - /opt/kickstart-elk/elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
+      - /opt/kickstart-elk/elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
+      - /opt/kickstart-elk/elasticsearch/data:/opt/elasticsearch/data
+      - /opt/kickstart-elk/elasticsearch/log:/opt/elasticsearch/log
+      - /opt/kickstart-elk/elasticsearch/system:/opt/elasticsearch/system
+    networks:
+      - elk-stack
+  elk-kb-node:
+    image: elk/kibana:6.2.3
+    container_name: elk-kb-node
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-kb-node
+    ports:
+      - "5601:5601"
+    volumes:
+      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-elk/supervisor/conf/kibana.ini:/etc/supervisord.d/kibana.ini
+      - /opt/kickstart-elk/kibana/conf/kibana.yml:/usr/local/lib/kibana/config/kibana.yml
+      - /opt/kickstart-elk/kibana/data:/opt/kibana/data
+      - /opt/kickstart-elk/kibana/log:/opt/kibana/log
+      - /opt/kickstart-elk/kibana/system:/opt/kibana/system
+    depends_on:
+      - elk-es-node
+    networks:
+      - elk-stack
+  elk-ls-node:
+    image: elk/logstash:6.2.3
+    container_name: elk-ls-node
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-ls-node
+    ports:
+      - "9600-9700:9600-9700"
+      - "5044:5044"
+    volumes:
+      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-elk/supervisor/conf/logstash.ini:/etc/supervisord.d/logstash.ini
+      - /opt/kickstart-elk/logstash/conf/logstash.yml:/usr/local/lib/logstash/config/logstash.yml
+      - /opt/kickstart-elk/logstash/conf/pipelines.yml:/usr/local/lib/logstash/config/pipelines.yml
+      - /opt/kickstart-elk/logstash/conf/beats.conf:/opt/logstash/conf/beats.conf
+      - /opt/kickstart-elk/logstash/data:/opt/logstash/data
+      - /opt/kickstart-elk/logstash/log:/opt/logstash/log
+      - /opt/kickstart-elk/logstash/system:/opt/logstash/system
+    depends_on:
+      - elk-es-node
+    networks:
+      - elk-stack
+networks:
+  elk-stack:
+    external:
+      name: elk-stack

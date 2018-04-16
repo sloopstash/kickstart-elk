@@ -1,0 +1,57 @@
+# pull core image.
+FROM centos:7
+
+# install epel repo.
+RUN set -x \
+  && yum install -y epel-release \
+  && yum update -y
+
+# install system packages.
+RUN set -x \
+  && yum install -y wget vim net-tools initscripts gcc make tar \
+  && yum install -y python-devel python-setuptools \
+  && easy_install supervisor pip \
+  && mkdir /etc/supervisord.d
+
+# switch work directory.
+WORKDIR /tmp
+
+# install oracle java development kit.
+COPY downloads/jdk-8u131-linux-x64.rpm ./
+RUN set -x \
+  && rpm -Uvh jdk-8u131-linux-x64.rpm \
+  && rm -rf jdk-8u131-linux-x64.rpm
+
+# create user named elasticsearch.
+RUN set -x \
+  && useradd -m -s /bin/bash -d /usr/local/lib/elasticsearch elasticsearch
+
+# install elasticsearch.
+COPY downloads/elasticsearch-6.2.3.tar.gz ./
+RUN set -x \
+  && tar xvzf elasticsearch-6.2.3.tar.gz > /dev/null \
+  && cp -r elasticsearch-6.2.3/* /usr/local/lib/elasticsearch/ \
+  && rm -rf elasticsearch-6.2.3.tar.gz elasticsearch-6.2.3
+RUN set -x \
+  && mkdir /opt/elasticsearch \
+  && mkdir /opt/elasticsearch/data \
+  && mkdir /opt/elasticsearch/log \
+  && mkdir /opt/elasticsearch/system \
+  && touch /opt/elasticsearch/system/process.pid
+
+# change ownership of elasticsearch directories.
+RUN set -x \
+  && chown -R elasticsearch:elasticsearch /usr/local/lib/elasticsearch \
+  && chown -R elasticsearch:elasticsearch /opt/elasticsearch
+
+# install required plugins for elasticsearch.
+USER elasticsearch
+WORKDIR /usr/local/lib/elasticsearch
+RUN set -x \
+  && ./bin/elasticsearch-plugin install x-pack \
+  && ./bin/elasticsearch-plugin install ingest-geoip \
+  && ./bin/elasticsearch-plugin install ingest-user-agent
+
+# switch user and work directory.
+USER root
+WORKDIR /
