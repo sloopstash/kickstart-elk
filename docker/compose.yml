@@ -18,7 +18,7 @@ services:
       - /opt/kickstart-elk/elasticsearch/log:/opt/elasticsearch/log
       - /opt/kickstart-elk/elasticsearch/system:/opt/elasticsearch/system
     networks:
-      - elk-stack
+      - elk-net
   elk-kb-node:
     image: elk/kibana:6.2.3
     container_name: elk-kb-node
@@ -36,7 +36,7 @@ services:
     depends_on:
       - elk-es-node
     networks:
-      - elk-stack
+      - elk-net
   elk-ls-node:
     image: elk/logstash:6.2.3
     container_name: elk-ls-node
@@ -57,8 +57,8 @@ services:
     depends_on:
       - elk-es-node
     networks:
-      - elk-stack
+      - elk-net
 networks:
-  elk-stack:
+  elk-net:
     external:
-      name: elk-stack
+      name: elk-net
