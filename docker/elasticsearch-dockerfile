@@ -3,7 +3,7 @@ FROM centos:7
 
 # install epel repo.
 RUN set -x \
-  && yum install -y epel-release \
+  && yum install -y epel-release deltarpm \
   && yum update -y
 
 # install system packages.
@@ -31,17 +31,14 @@ COPY downloads/elasticsearch-6.2.3.tar.gz ./
 RUN set -x \
   && tar xvzf elasticsearch-6.2.3.tar.gz > /dev/null \
   && cp -r elasticsearch-6.2.3/* /usr/local/lib/elasticsearch/ \
+  && chown -R elasticsearch:elasticsearch /usr/local/lib/elasticsearch \
   && rm -rf elasticsearch-6.2.3.tar.gz elasticsearch-6.2.3
 RUN set -x \
   && mkdir /opt/elasticsearch \
   && mkdir /opt/elasticsearch/data \
   && mkdir /opt/elasticsearch/log \
   && mkdir /opt/elasticsearch/system \
-  && touch /opt/elasticsearch/system/process.pid
-
-# change ownership of elasticsearch directories.
-RUN set -x \
-  && chown -R elasticsearch:elasticsearch /usr/local/lib/elasticsearch \
+  && touch /opt/elasticsearch/system/process.pid \
   && chown -R elasticsearch:elasticsearch /opt/elasticsearch
 
 # install required plugins for elasticsearch.

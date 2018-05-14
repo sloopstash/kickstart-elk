@@ -3,7 +3,7 @@ FROM centos:7
 
 # install epel repo.
 RUN set -x \
-  && yum install -y epel-release \
+  && yum install -y epel-release deltarpm \
   && yum update -y
 
 # install system packages.
@@ -26,6 +26,7 @@ RUN set -x \
   && sha1sum kibana-6.2.3-linux-x86_64.tar.gz \
   && tar xvzf kibana-6.2.3-linux-x86_64.tar.gz > /dev/null \
   && cp -r kibana-6.2.3-linux-x86_64/* /usr/local/lib/kibana/ \
+  && chown -R kibana:kibana /usr/local/lib/kibana \
   && rm -rf kibana-6.2.3-linux-x86_64.tar.gz kibana-6.2.3-linux-x86_64
 RUN set -x \
   && mkdir /opt/kibana \
@@ -33,11 +34,7 @@ RUN set -x \
   && mkdir /opt/kibana/log \
   && touch /opt/kibana/log/stdout.log \
   && mkdir /opt/kibana/system \
-  && touch /opt/kibana/system/process.pid
-
-# change ownership of kibana directories.
-RUN set -x \
-  && chown -R kibana:kibana /usr/local/lib/kibana \
+  && touch /opt/kibana/system/process.pid \
   && chown -R kibana:kibana /opt/kibana
 
 # install required plugins for kibana.
