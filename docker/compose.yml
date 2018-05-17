@@ -11,7 +11,6 @@ services:
     volumes:
       - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
       - /opt/kickstart-elk/supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
-      - /opt/kickstart-elk/elasticsearch/conf/kernel.conf:/etc/sysctl.d/90-elasticsearch.conf
       - /opt/kickstart-elk/elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
       - /opt/kickstart-elk/elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
       - /opt/kickstart-elk/elasticsearch/data:/opt/elasticsearch/data
