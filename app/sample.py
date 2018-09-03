@@ -5,8 +5,8 @@ import argparse
 
 app = Flask(__name__)
 app.config['ELASTIC_APM'] = {
-   'SERVICE_NAME': 'Test',
-   'SECRET_TOKEN': 'TEST',
+   'SERVICE_NAME': 'Sample App',
+   'SECRET_TOKEN': 'test123',
 }
 apm = ElasticAPM(app)
 

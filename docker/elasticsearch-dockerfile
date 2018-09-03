@@ -1,13 +1,9 @@
 # pull core image.
-FROM centos:7
-
-# install epel repo.
-RUN set -x \
-  && yum install -y epel-release deltarpm \
-  && yum update -y
+FROM amazonlinux:2
 
 # install system packages.
 RUN set -x \
+  && yum update -y \
   && yum install -y wget vim net-tools initscripts gcc make tar \
   && yum install -y python-devel python-setuptools \
   && easy_install supervisor pip \
@@ -27,12 +23,12 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/elasticsearch elasticsearch
 
 # install elasticsearch.
-COPY downloads/elasticsearch-6.2.3.tar.gz ./
+COPY downloads/elasticsearch-6.4.0.tar.gz ./
 RUN set -x \
-  && tar xvzf elasticsearch-6.2.3.tar.gz > /dev/null \
-  && cp -r elasticsearch-6.2.3/* /usr/local/lib/elasticsearch/ \
+  && tar xvzf elasticsearch-6.4.0.tar.gz > /dev/null \
+  && cp -r elasticsearch-6.4.0/* /usr/local/lib/elasticsearch/ \
   && chown -R elasticsearch:elasticsearch /usr/local/lib/elasticsearch \
-  && rm -rf elasticsearch-6.2.3.tar.gz elasticsearch-6.2.3
+  && rm -rf elasticsearch-6.4.0.tar.gz elasticsearch-6.4.0
 RUN set -x \
   && mkdir /opt/elasticsearch \
   && mkdir /opt/elasticsearch/data \
@@ -45,9 +41,8 @@ RUN set -x \
 USER elasticsearch
 WORKDIR /usr/local/lib/elasticsearch
 RUN set -x \
-  && ./bin/elasticsearch-plugin install x-pack \
-  && ./bin/elasticsearch-plugin install ingest-geoip \
-  && ./bin/elasticsearch-plugin install ingest-user-agent
+  && echo "y" | ./bin/elasticsearch-plugin install ingest-geoip \
+  && echo "y" | ./bin/elasticsearch-plugin install ingest-user-agent
 
 # switch user and work directory.
 USER root

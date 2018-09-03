@@ -1,13 +1,9 @@
 # pull core image.
-FROM centos:7
-
-# install epel repo.
-RUN set -x \
-  && yum install -y epel-release deltarpm \
-  && yum update -y
+FROM amazonlinux:2
 
 # install system packages.
 RUN set -x \
+  && yum update -y \
   && yum install -y wget vim net-tools initscripts gcc make tar \
   && yum install -y python-devel python-setuptools \
   && easy_install supervisor pip \
@@ -27,12 +23,12 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/logstash logstash
 
 # install logstash.
-COPY downloads/logstash-6.2.3.tar.gz ./
+COPY downloads/logstash-6.4.0.tar.gz ./
 RUN set -x \
-  && tar xvzf logstash-6.2.3.tar.gz > /dev/null \
-  && cp -r logstash-6.2.3/* /usr/local/lib/logstash/ \
+  && tar xvzf logstash-6.4.0.tar.gz > /dev/null \
+  && cp -r logstash-6.4.0/* /usr/local/lib/logstash/ \
   && chown -R logstash:logstash /usr/local/lib/logstash \
-  && rm -rf logstash-6.2.3.tar.gz logstash-6.2.3
+  && rm -rf logstash-6.4.0.tar.gz logstash-6.4.0
 RUN set -x \
   && mkdir /opt/logstash \
   && mkdir /opt/logstash/data \

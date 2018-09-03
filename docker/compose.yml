@@ -1,7 +1,7 @@
 version: '3'
 services:
-  elk-es-node:
-    image: elk/elasticsearch:6.2.3
+  elasticsearch:
+    image: elk/elasticsearch:v1
     container_name: elk-es-node
     privileged: true
     command: "/usr/bin/supervisord -c /etc/supervisord.conf"
@@ -18,8 +18,8 @@ services:
       - /opt/kickstart-elk/elasticsearch/system:/opt/elasticsearch/system
     networks:
       - elk-net
-  elk-kb-node:
-    image: elk/kibana:6.2.3
+  kibana:
+    image: elk/kibana:v1
     container_name: elk-kb-node
     command: "/usr/bin/supervisord -c /etc/supervisord.conf"
     hostname: elk-kb-node
@@ -33,11 +33,11 @@ services:
       - /opt/kickstart-elk/kibana/log:/opt/kibana/log
       - /opt/kickstart-elk/kibana/system:/opt/kibana/system
     depends_on:
-      - elk-es-node
+      - elasticsearch
     networks:
       - elk-net
-  elk-ls-node:
-    image: elk/logstash:6.2.3
+  logstash:
+    image: elk/logstash:v1
     container_name: elk-ls-node
     command: "/usr/bin/supervisord -c /etc/supervisord.conf"
     hostname: elk-ls-node
@@ -54,7 +54,7 @@ services:
       - /opt/kickstart-elk/logstash/log:/opt/logstash/log
       - /opt/kickstart-elk/logstash/system:/opt/logstash/system
     depends_on:
-      - elk-es-node
+      - elasticsearch
     networks:
       - elk-net
 networks:

@@ -21,6 +21,7 @@ cluster.name: elk-cluster
 # Use a descriptive name for the node:
 #
 node.name: elk-es-node
+#
 # Add custom attributes to the node:
 #
 #node.attr.rack: r1
@@ -51,7 +52,7 @@ bootstrap.memory_lock: true
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
-# network.host: 0.0.0.0
+#network.host: 192.168.0.1
 #
 # Set a custom port for HTTP:
 #
@@ -86,5 +87,5 @@ gateway.recover_after_nodes: 1
 #
 action.destructive_requires_name: true
 
-# Extra configs.
+# Custom configurations.
 network.bind_host: 0.0.0.0
