@@ -1,0 +1,37 @@
+- name: access
+  type: group
+  description: Fields generated from Nginx access log pipeline.
+  fields:
+    - name: remote_ip
+      type: ip
+      description: Remote IP address from which the HTTP request came.
+    - name: host
+      type: keyword
+      description: HTTP request hostname.
+    - name: method
+      type: keyword
+      description: HTTP request method.
+    - name: path
+      type: keyword
+      description: URI of the HTTP request.
+    - name: version
+      type: keyword
+      description: HTTP version.
+      example: 1.1 | 2
+    - name: status
+      type: short
+      description: HTTP request status code.
+      example: 200 | 404 | 500
+    - name: referer
+      type: keyword
+      description: Referer URL from which HTTP request originated.
+    - name: body_sent.bytes
+      type: long
+      format: bytes
+      description: Amount of outbound data transfer for the HTTP request.
+    - name: user_agent
+      type: text
+      description: User agent that raised the HTTP request.
+    - name: request_time
+      type: float
+      description: Amount of time taken to complete the HTTP request.

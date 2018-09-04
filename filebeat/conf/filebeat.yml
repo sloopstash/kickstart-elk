@@ -1732,7 +1732,7 @@ logging.files:
 
   # The permissions mask to apply when rotating log files. The default value is 0600.
   # Must be a valid Unix-style file permissions mask expressed in octal notation.
-  #permissions: 0600
+  permissions: 0644
 
 # Set to true to log messages in json format.
 #logging.json: false

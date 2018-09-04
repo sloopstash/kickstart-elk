@@ -1,0 +1,20 @@
+- name: error
+  type: group
+  description: Fields generated from Nginx error log pipeline.
+  fields:
+    - name: level
+      type: keyword
+      description: Error level.
+      example: debug | info | notice | warn | error | crit | alert | emerg
+    - name: process_id
+      type: integer
+      description: Process identifier which handled the HTTP request.
+    - name: thread_id
+      type: integer
+      description: Thread identifier which handled the HTTP request.
+    - name: connection_id
+      type: integer
+      description: Connection identifier which handled the HTTP request.
+    - name: message
+      type: text
+      description: Complete error message.
