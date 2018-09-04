@@ -13,6 +13,7 @@ services:
       - /opt/kickstart-elk/supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
       - /opt/kickstart-elk/elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
       - /opt/kickstart-elk/elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
+      - /opt/kickstart-elk/elasticsearch/conf/jvm.options:/usr/local/lib/elasticsearch/config/jvm.options
       - /opt/kickstart-elk/elasticsearch/data:/opt/elasticsearch/data
       - /opt/kickstart-elk/elasticsearch/log:/opt/elasticsearch/log
       - /opt/kickstart-elk/elasticsearch/system:/opt/elasticsearch/system
@@ -48,6 +49,7 @@ services:
       - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
       - /opt/kickstart-elk/supervisor/conf/logstash.ini:/etc/supervisord.d/logstash.ini
       - /opt/kickstart-elk/logstash/conf/logstash.yml:/usr/local/lib/logstash/config/logstash.yml
+      - /opt/kickstart-elk/logstash/conf/jvm.options:/usr/local/lib/logstash/config/jvm.options
       - /opt/kickstart-elk/logstash/conf/pipelines.yml:/usr/local/lib/logstash/config/pipelines.yml
       - /opt/kickstart-elk/logstash/conf/beats.conf:/opt/logstash/conf/beats.conf
       - /opt/kickstart-elk/logstash/data:/opt/logstash/data
