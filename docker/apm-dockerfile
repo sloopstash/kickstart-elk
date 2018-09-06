@@ -4,25 +4,19 @@ FROM sloopstash/amazonlinux:v1
 # switch work directory.
 WORKDIR /tmp
 
-# create user named apm.
-RUN set -x \
-  && useradd -m -s /bin/bash -d /usr/local/lib/apm apm
-
 # install apm.
 COPY downloads/apm-server-6.4.0-linux-x86_64.tar.gz ./
 RUN set -x \
   && tar xvzf apm-server-6.4.0-linux-x86_64.tar.gz > /dev/null \
+  && mkdir /usr/local/lib/apm \
   && cp -r apm-server-6.4.0-linux-x86_64/* /usr/local/lib/apm/ \
-  && chown -R apm:apm /usr/local/lib/apm \
   && rm -rf apm-server-6.4.0-linux-x86_64.tar.gz apm-server-6.4.0-linux-x86_64
 RUN set -x \
   && mkdir /opt/apm \
   && mkdir /opt/apm/data \
   && mkdir /opt/apm/log \
   && mkdir /opt/apm/system \
-  && touch /opt/apm/system/process.pid \
-  && chown -R apm:apm /opt/apm
+  && touch /opt/apm/system/process.pid
 
-# switch user and work directory.
-USER root
+# switch work directory.
 WORKDIR /
