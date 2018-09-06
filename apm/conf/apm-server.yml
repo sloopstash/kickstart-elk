@@ -162,7 +162,7 @@ setup.template.settings:
 # These settings can be adjusted to load your own template or overwrite existing ones.
 
 # Set to false to disable template loading.
-setup.template.enabled: false
+setup.template.enabled: true
 
 # Template name. By default the template name is "apm-%{[beat.version]}"
 # The template name and pattern has to be set in case the elasticsearch index pattern is modified.
@@ -312,7 +312,7 @@ output.elasticsearch:
   hosts: ["100.2.1.10:9200"]
 
   # Boolean flag to enable or disable the output module.
-  enabled: false
+  enabled: true
 
   # Set gzip compression level.
   #compression_level: 0
@@ -447,7 +447,7 @@ output.elasticsearch:
 #----------------------------- Logstash output ---------------------------------
 output.logstash:
   # Boolean flag to enable or disable the output module.
-  enabled: true
+  enabled: false
 
   # The Logstash hosts
   hosts: ["100.2.1.20:5044"]
