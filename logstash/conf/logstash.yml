@@ -16,7 +16,7 @@
 #
 # Use a descriptive name for the node:
 #
-node.name: elk-ls-node
+node.name: elk-logstash
 #
 # If omitted the node name will default to the machine's host name
 #

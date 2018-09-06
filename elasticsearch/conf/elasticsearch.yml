@@ -20,7 +20,7 @@ cluster.name: elk-cluster
 #
 # Use a descriptive name for the node:
 #
-node.name: elk-es-node
+node.name: elk-elasticsearch
 #
 # Add custom attributes to the node:
 #

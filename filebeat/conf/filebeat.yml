@@ -992,7 +992,7 @@ output.elasticsearch:
   # Scheme and port can be left out and will be set to the default (http and 9200)
   # In case you specify and additional path, the scheme is required: http://localhost:9200/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-  hosts: ["100.2.1.0:9200"]
+  hosts: ["100.2.1.10:9200"]
 
   # Set gzip compression level.
   #compression_level: 0
@@ -1097,7 +1097,7 @@ output.logstash:
   enabled: true
 
   # The Logstash hosts
-  hosts: ["100.2.1.0:5044"]
+  hosts: ["100.2.1.20:5044"]
 
   # Number of workers per Logstash host.
   #worker: 1
@@ -1581,7 +1581,7 @@ setup.dashboards.directory: ${path.home}/kibana
 # These settings can be adjusted to load your own template or overwrite existing ones.
 
 # Set to false to disable template loading.
-setup.template.enabled: true
+setup.template.enabled: false
 
 # Template name. By default the template name is "filebeat-%{[beat.version]}"
 # The template name and pattern has to be set in case the elasticsearch index pattern is modified.
@@ -1621,7 +1621,7 @@ setup.template.settings:
   # of the Elasticsearch template. For more details, please check
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
   index:
-    number_of_shards: 2
+    number_of_shards: 3
     #codec: best_compression
     #number_of_routing_shards: 30
 
@@ -1640,7 +1640,7 @@ setup.kibana:
   # Scheme and port can be left out and will be set to the default (http and 5601)
   # In case you specify and additional path, the scheme is required: http://localhost:5601/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
-  host: "100.2.1.0:5601"
+  host: "100.2.1.30:5601"
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
