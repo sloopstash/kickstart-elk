@@ -62,6 +62,26 @@ services:
     networks:
       elk-net:
         ipv4_address: 100.2.1.30
+  apm:
+    image: sloopstash/apm:v1
+    container_name: elk-apm
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-apm
+    ports:
+      - "8200:8200"
+    volumes:
+      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-elk/supervisor/conf/apm.ini:/etc/supervisord.d/apm.ini
+      - /opt/kickstart-elk/apm/conf/apm-server.yml:/usr/local/lib/apm/apm-server.yml
+      - /opt/kickstart-elk/apm/data:/opt/apm/data
+      - /opt/kickstart-elk/apm/log:/opt/apm/log
+      - /opt/kickstart-elk/apm/system:/opt/apm/system
+    depends_on:
+      - elasticsearch
+      - logstash
+    networks:
+      elk-net:
+        ipv4_address: 100.2.1.40
 networks:
   elk-net:
     external:
