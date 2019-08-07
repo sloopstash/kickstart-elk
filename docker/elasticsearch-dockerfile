@@ -29,13 +29,5 @@ RUN set -x \
   && touch /opt/elasticsearch/system/process.pid \
   && chown -R elasticsearch:elasticsearch /opt/elasticsearch
 
-# install required plugins for elasticsearch.
-USER elasticsearch
-WORKDIR /usr/local/lib/elasticsearch
-RUN set -x \
-  && echo "y" | ./bin/elasticsearch-plugin install ingest-geoip \
-  && echo "y" | ./bin/elasticsearch-plugin install ingest-user-agent
-
 # switch user and work directory.
-USER root
 WORKDIR /
