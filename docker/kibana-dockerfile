@@ -25,6 +25,5 @@ RUN set -x \
   && touch /opt/kibana/system/process.pid \
   && chown -R kibana:kibana /opt/kibana
 
-# switch user and work directory.
-USER root
+# switch work directory.
 WORKDIR /

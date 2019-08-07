@@ -29,5 +29,5 @@ RUN set -x \
   && touch /opt/elasticsearch/system/process.pid \
   && chown -R elasticsearch:elasticsearch /opt/elasticsearch
 
-# switch user and work directory.
+# switch work directory.
 WORKDIR /
