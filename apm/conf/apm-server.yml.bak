@@ -6,105 +6,53 @@ apm-server:
   # Defines the host and port the server is listening on.  use "unix:/path/to.sock" to listen on a unix domain socket.
   host: "0.0.0.0:8200"
 
+  # Maximum permitted size in bytes of an unzipped request accepted by the server to be processed.
+  #max_unzipped_size: 31457280
   # Maximum permitted size in bytes of a request's header accepted by the server to be processed.
   #max_header_size: 1048576
 
+  # Maximum duration request will be queued before being read.
+  #max_request_queue_time: 2s
   # Maximum permitted duration for reading an entire request.
   #read_timeout: 30s
-
   # Maximum permitted duration for writing a response.
   #write_timeout: 30s
 
   # Maximum duration in seconds before releasing resources when shutting down the server.
   #shutdown_timeout: 5s
 
-  #-- v1 Intake API (deprecated)
-
-  # Maximum permitted size in bytes of an unzipped request accepted by the server to be processed.
-  #max_unzipped_size: 31457280
-
-  # Maximum duration request will be queued before being read.
-  #max_request_queue_time: 2s
-
   # Maximum number of requests permitted to be sent to the server concurrently.
   #concurrent_requests: 5
 
-  #-- v2 Intake API
-
-  # Maximum allowed size in bytes of a single event
-  #max_event_size: 307200
-
-  #--
-
   # Maximum number of new connections to accept simultaneously (0 means unlimited)
   # max_connections: 0
+
+  # Instrumentation support for the server's HTTP endpoints and event publisher.
+  #instrumentation:
+    # Set to true to enable instrumentation of the APM server itself.
+    #enabled: false
+    # Environment in which the APM Server is running on (eg: staging, production, etc.)
+    #environment: ""
 
   # Authorization token to be checked. If a token is set here the agents must
   # send their token in the following format: Authorization: Bearer <secret-token>.
   # It is recommended to use an authorization token in combination with SSL enabled,
   # and save the token in the beats keystore.
   #secret_token:
-
-  # Enable secure communication between APM agents and the server. By default ssl is disabled.
-  #ssl:
-    #enabled: false
-
-    # Configure a list of root certificate authorities for verifying client certificates
-    #certificate_authorities: []
-
-    # Path to file containing the certificate for server authentication
-    # Needs to be configured when ssl is enabled
-    #certificate: ''
-
-    # Path to file containing server certificate key
-    # Needs to be configured when ssl is enabled
-    #key: ''
-
-    # Optional configuration options for ssl communication
-
-    # Passphrase for decrypting the Certificate Key.
-    # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
-    #key_passphrase: ''
-
-    # List of supported/valid protocol versions. By default TLS versions 1.0 up to 1.2 are enabled.
-    #supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
-
-    # Configure cipher suites to be used for SSL connections
-    #cipher_suites: []
-
-    # Configure curve types for ECDHE based cipher suites
-    #curve_types: []
-
-    # Configure which type of client authentication is supported.
-    # Options are `none`, `optional`, and `required`. Default is `optional`.
-    #client_authentication: "optional"
-
+  #ssl.enabled: false
+  #ssl.certificate : "path/to/cert"
+  #ssl.key : "path/to/private_key"
+  # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+  #ssl.key_passphrase: ""
 
   #rum:
     # To enable real user monitoring (RUM) support set this to true.
     #enabled: false
 
-    #-- v1 RUM endpoint (deprecated)
-
     # Rate limit per second and IP address for requests sent to the RUM endpoint.
     #rate_limit: 10
 
-    #-- v2 RUM endpoint
-
-    #event_rate:
-
-      # Defines the maximum amount of events allowed to be sent to the APM Server v2 RUM
-      # endpoint per ip per second. Defaults to 300.
-      #limit: 300
-
-      # An LRU cache is used to keep a rate limit per IP for the most recently seen IPs.
-      # This setting defines the number of unique IPs that can be tracked in the cache.
-      # Sites with many concurrent clients should consider increasing this limit. Defaults to 1000.
-      #lru_size: 1000
-
-    #-- General RUM settings
-
-    # Comma separated list of permitted origins for real user monitoring.
+    # Comma separated list of permitted origins for real user monitoring. 
     # User-agents will send an origin header that will be validated against this list.
     # An origin is made of a protocol scheme, host and port, without the url path.
     # Allowed origins in this setting can have * to match anything (eg.: http://*.example.com)
@@ -149,7 +97,6 @@ apm-server:
       # is changed, a matching index pattern needs to be specified here.
       #index_pattern: "apm-*-sourcemap*"
 
-
   # If set to true, APM Server augments data received by the agent with the original IP of the backend server,
   # or the IP and User Agent of the real user (RUM requests). It defaults to true.
   #capture_personal_data: true
@@ -162,43 +109,10 @@ apm-server:
     # Url to expose expvar
     #url: "/debug/vars"
 
-  # Instrumentation support for the server's HTTP endpoints and event publisher.
-  #instrumentation:
-    # Set to true to enable instrumentation of the APM server itself.
-    #enabled: false
-    # Environment in which the APM Server is running on (eg: staging, production, etc.)
-    #environment: ""
-    # Remote host to report instrumentation results to. Single entry permitted until
-    # https://github.com/elastic/apm-agent-go/issues/200 is resolved.
-    #hosts:
-    #  - http://remote-apm-server:8200
-    # Remote apm-servers' secret_token
-    #secret_token:
-
-  # Metrics endpoint
+  # Experimental Metrics endpoint
   #metrics:
     # Set to false to disable the metrics endpoint
     #enabled: true
-
-  # A pipeline is a definition of processors applied to documents when writing them to Elasticsearch.
-  # Using pipelines involves two steps:
-  # (1) registering a pipeline
-  # (2) applying a pipeline during data ingestion (see `output.elasticsearch.pipelines`)
-  #
-  # You can manually register pipelines, or use this configuration option to ensure
-  # pipelines are loaded and registered at the configured Elasticsearch instances.
-  # Automatic pipeline registration requires
-  # * `output.elasticsearch` to be enabled and configured.
-  # * having the required Elasticsearch Processor Plugins installed.
-  #   APM Server default pipelines require you to have the `Ingest User Agent Plugin` installed.
-  #   Find the default pipeline configuration at `ingest/pipeline/definition.json`.
-  #
-  #register.ingest.pipeline:
-    # Registers pipeline definitions in Elasticsearch on APM Server startup. Defaults to false.
-    #enabled: false
-
-    # Overwrites existing pipeline definitions in Elasticsearch. Defaults to true.
-    #overwrite: true
 
 #================================ General ======================================
 
@@ -225,6 +139,20 @@ apm-server:
 # Sets the maximum number of CPUs that can be executing simultaneously. The
 # default is the number of logical CPUs available in the system.
 #max_procs:
+
+
+#==================== Elasticsearch template setting ==========================
+
+# Elasticsearch template settings
+setup.template.settings:
+
+  # A dictionary of settings to place into the settings.index dictionary
+  # of the Elasticsearch template. For more details, please check
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
+  index:
+    number_of_shards: 3
+    codec: best_compression
+    #number_of_routing_shards: 30
 
 
 #============================== Template =====================================
@@ -259,9 +187,8 @@ setup.template.settings:
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
   index:
     number_of_shards: 3
-    codec: best_compression
+    #codec: best_compression
     #number_of_routing_shards: 30
-    #mapping.total_fields.limit: 2000
 
   # A dictionary of settings for the _source field. For more details, please check
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html
@@ -316,7 +243,7 @@ setup.template.settings:
 
 #============================== Deprecated: Kibana =====================================
 
-# Deprecated: Starting with APM Server version 6.4, loading dashboards and index pattern
+# Deprecated: Starting with APM Server version 6.4, loading dashboards and index pattern 
 #             from the APM Server into Kibana is deprecated.
 #             We suggest to use the Kibana UI to load APM Server dashboards and index pattern instead.
 #
@@ -371,19 +298,6 @@ setup.template.settings:
   # Configure curve types for ECDHE based cipher suites
   #ssl.curve_types: []
 
-
-#============================= Elastic Cloud ==================================
-
-# These settings simplify using APM Server with the Elastic Cloud (https://cloud.elastic.co/).
-
-# The cloud.id setting overwrites the `output.elasticsearch.hosts` and
-# [deprecated] `setup.kibana.host` options.
-# You can find the `cloud.id` in the Elastic Cloud web UI.
-#cloud.id:
-
-# The cloud.auth setting overwrites the `output.elasticsearch.username` and
-# `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
-#cloud.auth:
 
 #================================ Outputs =====================================
 
@@ -460,13 +374,8 @@ output.elasticsearch:
       when.contains:
         processor.event: "onboarding"
 
-  # A pipeline is a definition of processors applied to documents when writing them to Elasticsearch.
-  # APM Server comes with a default pipeline definition, located at `ingets/pipeline/definition.json`.
-  # Pipelines are disabled by default. To make use of them you have to:
-  # (1) ensure pipelines are registered in Elasticsearch, see `apm-server.register.ingest.pipeline`
-  # (2) enable the following:
-  #pipelines:
-  #- pipeline: "apm_user_agent"
+  # Optional ingest node pipeline. By default no pipeline will be used.
+  #pipeline: ""
 
   # Optional HTTP Path
   #path: "/elasticsearch"
@@ -486,17 +395,6 @@ output.elasticsearch:
   # The maximum number of events to bulk in a single Elasticsearch bulk API index request.
   # The default is 50.
   #bulk_max_size: 50
-
-  # The number of seconds to wait before trying to reconnect to Elasticsearch
-  # after a network error. After waiting backoff.init seconds, apm-server
-  # tries to reconnect. If the attempt fails, the backoff timer is increased
-  # exponentially up to backoff.max. After a successful connection, the backoff
-  # timer is reset. The default is 1s.
-  #backoff.init: 1s
-
-  # The maximum number of seconds to wait before attempting to connect to
-  # Elasticsearch after a network error. The default is 60s.
-  #backoff.max: 60s
 
   # Configure http request timeout before failing an request to Elasticsearch.
   #timeout: 90
@@ -583,7 +481,7 @@ output.logstash:
   #slow_start: false
 
   # The number of seconds to wait before trying to reconnect to Logstash
-  # after a network error. After waiting backoff.init seconds, apm-server
+  # after a network error. After waiting backoff.init seconds, the Beat
   # tries to reconnect. If the attempt fails, the backoff timer is increased
   # exponentially up to backoff.max. After a successful connection, the backoff
   # timer is reset. The default is 1s.
@@ -877,20 +775,3 @@ http.host: localhost
 
 # Port on which the HTTP endpoint will bind. Default is 5066.
 http.port: 5066
-
-#============================== Xpack Monitoring ===============================
-# APM server can export internal metrics to a central Elasticsearch monitoring
-# cluster.  This requires xpack monitoring to be enabled in Elasticsearch.  The
-# reporting is disabled by default.
-
-# Set to true to enable the monitoring reporter.
-xpack.monitoring.enabled: false
-
-# Uncomment to send the metrics to Elasticsearch. Most settings from the
-# Elasticsearch output are accepted here as well. Any setting that is not set is
-# automatically inherited from the Elasticsearch output configuration, so if you
-# have the Elasticsearch output configured, you can simply uncomment the
-# following line.
-#xpack.monitoring.elasticsearch:
-#  username: "apm_system"
-#  password: ""
