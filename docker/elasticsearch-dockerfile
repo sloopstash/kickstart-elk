@@ -15,12 +15,12 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/elasticsearch elasticsearch
 
 # install elasticsearch.
-COPY downloads/elasticsearch-6.4.0.tar.gz ./
+COPY downloads/elasticsearch-6.8.2.tar.gz ./
 RUN set -x \
-  && tar xvzf elasticsearch-6.4.0.tar.gz > /dev/null \
-  && cp -r elasticsearch-6.4.0/* /usr/local/lib/elasticsearch/ \
+  && tar xvzf elasticsearch-6.8.2.tar.gz > /dev/null \
+  && cp -r elasticsearch-6.8.2/* /usr/local/lib/elasticsearch/ \
   && chown -R elasticsearch:elasticsearch /usr/local/lib/elasticsearch \
-  && rm -rf elasticsearch-6.4.0.tar.gz elasticsearch-6.4.0
+  && rm -rf elasticsearch-6.8.2.tar.gz elasticsearch-6.8.2
 RUN set -x \
   && mkdir /opt/elasticsearch \
   && mkdir /opt/elasticsearch/data \

@@ -15,12 +15,12 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/logstash logstash
 
 # install logstash.
-COPY downloads/logstash-6.4.0.tar.gz ./
+COPY downloads/logstash-6.8.2.tar.gz ./
 RUN set -x \
-  && tar xvzf logstash-6.4.0.tar.gz > /dev/null \
-  && cp -r logstash-6.4.0/* /usr/local/lib/logstash/ \
+  && tar xvzf logstash-6.8.2.tar.gz > /dev/null \
+  && cp -r logstash-6.8.2/* /usr/local/lib/logstash/ \
   && chown -R logstash:logstash /usr/local/lib/logstash \
-  && rm -rf logstash-6.4.0.tar.gz logstash-6.4.0
+  && rm -rf logstash-6.8.2.tar.gz logstash-6.8.2
 RUN set -x \
   && mkdir /opt/logstash \
   && mkdir /opt/logstash/data \
