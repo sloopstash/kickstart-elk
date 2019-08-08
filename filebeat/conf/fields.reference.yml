@@ -1,0 +1,5218 @@
+- key: log
+  title: Log file content
+  description: >
+    Contains log file lines.
+  fields:
+    - name: source
+      type: keyword
+      required: true
+      description: >
+        The file from which the line was read. This field contains the absolute path to the file.
+        For example: `/var/log/system.log`.
+
+    - name: offset
+      type: long
+      required: false
+      description: >
+        The file offset the reported line starts at.
+
+    - name: message
+      type: text
+      ignore_above: 0
+      required: true
+      description: >
+        The content of the line read from the log file.
+
+    - name: stream
+      type: keyword
+      required: false
+      description: >
+        Log stream when reading container logs, can be 'stdout' or 'stderr'
+
+    - name: prospector.type
+      required: true
+      deprecated: 6.3
+      description: >
+        The input type from which the event was generated. This field is set to the value specified
+        for the `type` option in the input section of the Filebeat config file. (DEPRECATED: see `input.type`)
+
+    - name: input.type
+      required: true
+      description: >
+        The input type from which the event was generated. This field is set to the value specified
+        for the `type` option in the input section of the Filebeat config file.
+
+    - name: read_timestamp
+      description: >
+        In case the ingest pipeline parses the timestamp from the log contents, it stores
+        the original `@timestamp` (representing the time when the log line was read) in this
+        field.
+
+    - name: fileset.module
+      description: >
+        The Filebeat module that generated this event.
+
+    - name: fileset.name
+      description: >
+        The Filebeat fileset that generated this event.
+
+    - name: event.dataset
+      description: >
+        The Filebeat dataset that generated this event.
+
+    - name: syslog.facility
+      type: long
+      required: false
+      description: >
+        The facility extracted from the priority.
+
+    - name: syslog.priority
+      type: long
+      required: false
+      description: >
+        The priority of the syslog event.
+
+    - name: syslog.severity_label
+      type: keyword
+      required: false
+      description: >
+        The human readable severity.
+
+    - name: syslog.facility_label
+      type: keyword
+      required: false
+      description: >
+        The human readable facility.
+
+    - name: process.program
+      type: keyword
+      required: false
+      description: >
+        The name of the program.
+
+    - name: process.pid
+      type: long
+      required: false
+      description: >
+        The pid of the process.
+
+    - name: event.outcome
+      level: extended
+      type: keyword
+      description: >
+        The outcome of the event.
+
+        If the event describes an action, this fields contains the outcome of
+        that action. Examples outcomes are `success` and `failure`. Warning: In
+        future versions of ECS, we plan to provide a list of acceptable values
+        for this field, please use with caution.
+
+    - name: event.severity
+      type: long
+      required: false
+      description: >
+        The severity of the event.
+
+    - name: service.name
+      type: keyword
+      description: >
+        Service name.
+
+    - name: log.level
+      type: keyword
+      description: >
+        Logging level.
+
+    - name: log.flags
+      description: >
+        This field contains the flags of the event.
+
+    - name: log.source.address
+      type: keyword
+      description: >
+        Log source address.
+
+    - name: log.file.path
+      type: keyword
+      description: >
+        Log source path.
+
+    - name: log.original
+      type: keyword
+      index: false
+      doc_values: false
+
+    - name: event.created
+      type: date
+      description: >
+        event.created contains the date on which the event was created. In case of
+        log events this is when the log line was read by Filebeat. In comparison
+        @timestamp is the processed timestamp from the log line. If both are identical
+        only @timestamp should be used.
+
+    - name: event.duration
+      type: long
+      format: duration
+      input_format: nanoseconds
+      description: >
+        Duration of the event in nanoseconds.
+
+        If event.start and event.end are known this value should be the
+        difference between the end and start time.
+
+    - name: event.end
+      type: date
+      description: >
+        event.end contains the date when the event ended or when the activity
+        was last observed.
+
+    - name: event.type
+      type: keyword
+      description: >
+        A type given to this kind of event which can be used for grouping.
+
+    - name: event.start
+      level: extended
+      type: date
+      description: >
+        event.start contains the date when the event started or when the
+        activity was first observed.
+
+    - name: http.response.status_code
+      type: long
+      description: >
+        HTTP response status_code.
+      example: 404
+
+    - name: http.response.elapsed_time
+      type: long
+      description: >
+        Elapsed time between request and response in milli seconds.
+
+    - name: http.response.body.bytes
+      type: long
+      format: bytes
+      description: >
+        Size in bytes of the response body.
+
+    - name: http.response.content_length
+      type: long
+      description: >
+        Content length of the HTTP response body.
+
+    - name: http.request.method
+      type: keyword
+      description: >
+        Request method.
+
+    - name: source_ecs
+      type: group
+      fields:
+      - name: bytes
+        type: long
+        format: bytes
+        description: >
+          Bytes sent from the source to the destination.
+
+      - name: ip
+        type: ip
+        description: >
+          IP address of the source.
+
+          Can be one or multiple IPv4 or IPv6 addresses.
+
+      - name: mac
+        level: core
+        type: keyword
+        description: >
+          MAC address of the source.
+
+      - name: packets
+        level: core
+        type: long
+        description: >
+          Packets sent from the client to the server.
+
+      - name: port
+        type: long
+        description: >
+          Port of the source.
+
+      - name: geo
+        type: group
+        description:
+          Geolocation for source.
+        fields:
+        - name: continent_name
+          type: keyword
+          description: >
+            Name of the continent.
+
+        - name: country_iso_code
+          type: keyword
+          description: >
+            Country ISO code.
+
+        - name: location
+          type: geo_point
+          description: >
+            Longitude and latitude.
+
+        - name: region_name
+          type: keyword
+          description: >
+            Region name.
+
+        - name: city_name
+          type: keyword
+          description: >
+            City name.
+
+        - name: region_iso_code
+          type: keyword
+          description: >
+            Region ISO code.
+
+    - name: destination
+      type: group
+      fields:
+        - name: bytes
+          level: core
+          type: long
+          format: bytes
+          description: >
+            Bytes sent from the destination to the source.
+
+        - name: domain
+          level: core
+          type: keyword
+          description: >
+            Destination domain.
+
+        - name: ip
+          type: ip
+          description: >
+            IP address of the destination.
+
+            Can be one or multiple IPv4 or IPv6 addresses.
+
+        - name: mac
+          level: core
+          type: keyword
+          description: >
+            MAC address of the destination.
+
+        - name: packets
+          level: core
+          type: long
+          description: >
+            Packets sent from the destination to the source.
+
+        - name: port
+          type: long
+          description: >
+            Port of the destination.
+
+        - name: geo
+          type: group
+          description:
+            Geolocation for destination.
+          fields:
+          - name: continent_name
+            type: keyword
+            description: >
+              Name of the continent.
+
+          - name: country_iso_code
+            type: keyword
+            description: >
+              Country ISO code.
+
+          - name: location
+            type: geo_point
+            description: >
+              Longitude and latitude.
+
+          - name: region_name
+            type: keyword
+            description: >
+              Region name.
+
+          - name: city_name
+            type: keyword
+            description: >
+              City name.
+
+          - name: region_iso_code
+            type: keyword
+            description: >
+              Region ISO code.
+
+    - name: user_agent
+      title: User agent
+      description: >
+        The user_agent fields normally come from a browser request. They often
+        show up in web service logs coming from the parsed user agent string.
+      type: group
+      fields:
+        - name: original
+          level: extended
+          type: keyword
+          description: >
+            Unparsed version of the user_agent.
+
+        - name: device
+          level: extended
+          type: keyword
+          description: >
+            Name of the physical device.
+
+        - name: version
+          level: extended
+          type: keyword
+          description: >
+            Version of the physical device.
+
+        - name: major
+          level: extended
+          type: long
+          description: >
+            Major version of the user agent.
+
+        - name: minor
+          level: extended
+          type: long
+          description: >
+            Minor version of the user agent.
+
+        - name: patch
+          level: extended
+          type: keyword
+          description: >
+            Patch version of the user agent.
+
+        - name: name
+          level: extended
+          type: keyword
+          example: Chrome
+          description: >
+            Name of the user agent.
+
+        - name: os.name
+          level: extended
+          type: keyword
+          description: >
+            Name of the operating system.
+
+        - name: os.full_name
+          level: extended
+          type: keyword
+          description: >
+            Full name of the operating system (includes version).
+
+        - name: os.version
+          level: extended
+          type: keyword
+          description: >
+            Version of the operating system.
+
+        - name: os.major
+          level: extended
+          type: long
+          description: >
+            Major version of the operating system.
+
+        - name: os.minor
+          level: extended
+          type: long
+          description: >
+            Minor version of the operating system.
+
+    - name: url
+      description: >
+        URL fields provide a complete URL, with scheme, host, and path. The URL
+        object can be reused in other prefixes, such as `host.url.*` for
+        example. Keep the structure consistent whenever you use URL fields.
+
+      type: group
+      fields:
+
+      - name: domain
+        level: extended
+        type: keyword
+        description: >
+          Domain of the request, such as "www.elastic.co".
+
+          In some cases a URL may refer to an IP and/or port directly, without a
+          domain name. In this case, the IP address would go to the `domain` field.
+
+      - name: hostname
+        type: keyword
+        description: >
+          Hostname of the request, such as "elastic.co".
+          In some cases a URL may refer to an IP and/or port directly, without a
+          domain name. In this case, the IP address would go to the `hostname` field.
+
+      - name: path
+        level: extended
+        type: keyword
+        description: >
+          Path of the request, such as "/search".
+
+    - name: file
+      description: >
+        File fields provide details about each file.
+
+      type: group
+      fields:
+        - name: path
+          level: extended
+          type: keyword
+          description: Path to the file.
+
+        - name: size
+          type: long
+          description: File size in bytes (field is only added when `type` is
+            `file`).
+
+    - name: network
+      description: >
+        The network is defined as the communication path over which a host or
+        network event happens. The network.* fields should be populated with
+        details about the network activity associated with an event.
+      type: group
+      fields:
+      - name: bytes
+        level: core
+        type: long
+        format: bytes
+        description: >
+          Total bytes transferred in both directions.
+          If `source.bytes` and `destination.bytes` are known, `network.bytes` is their sum.
+
+      - name: packets
+        level: core
+        type: long
+        description: >
+          Total packets transferred in both directions.
+          If `source.packets` and `destination.packets` are known, `network.packets` is their sum.
+
+      - name: protocol
+        level: core
+        type: keyword
+        description: >
+          L7 Network protocol name. ex. http, lumberjack, transport protocol.
+
+          The field value must be normalized to lowercase for querying. See
+          "Lowercase Capitalization" in the "Implementing ECS" section.
+
+      - name: transport
+        level: core
+        type: keyword
+        description: >
+          Same as network.iana_number, but instead using the Keyword name of the
+          transport layer (udp, tcp, ipv6-icmp, etc.)
+
+          The field value must be normalized to lowercase for querying. See
+          "Lowercase Capitalization" in the "Implementing ECS"  section.
+
+      - name: type
+        level: core
+        type: keyword
+        description: >
+          In the OSI Model this would be the Network Layer. ipv4, ipv6, ipsec, pim, etc
+
+          The field value must be normalized to lowercase for querying. See
+          "Lowercase Capitalization" in the "Implementing ECS" section.
+
+    # Alias compatibility fields
+    - name: event.module
+      type: alias
+      path: fileset.module
+
+- key: beat
+  title: Beat
+  description: >
+    Contains common beat fields available in all event types.
+  fields:
+
+    - name: beat.name
+      description: >
+        The name of the Beat sending the log messages. If the Beat name is
+        set in the configuration file, then that value is used. If it is not
+        set, the hostname is used. To set the Beat name, use the `name`
+        option in the configuration file.
+    - name: beat.hostname
+      description: >
+        The hostname as returned by the operating system on which the Beat is
+        running.
+    - name: beat.timezone
+      description: >
+        The timezone as returned by the operating system on which the Beat is
+        running.
+    - name: beat.version
+      description: >
+        The version of the beat that generated this event.
+
+    - name: "@timestamp"
+      type: date
+      required: true
+      format: date
+      example: August 26th 2016, 12:35:53.332
+      description: >
+        The timestamp when the event log record was generated.
+
+    - name: tags
+      description: >
+        Arbitrary tags that can be set per Beat and per transaction
+        type.
+
+    - name: fields
+      type: object
+      object_type: keyword
+      description: >
+        Contains user configurable fields.
+
+    - name: error
+      type: group
+      description: >
+        Error fields containing additional info in case of errors.
+      fields:
+        - name: message
+          type: text
+          description: >
+            Error message.
+        - name: code
+          type: long
+          description: >
+            Error code.
+        - name: type
+          type: keyword
+          description: >
+            Error type.
+
+- key: alias
+  title: Alias
+  description: >
+    Alias fields for compatibility with 7.x.
+  fields:
+    # Common Beats fields
+    - name: host.hostname
+      type: alias
+      path: beat.hostname
+    - name: event.timezone
+      type: alias
+      path: beat.timezone
+
+    # Cloud processor fields
+    - name: cloud.provider
+      type: alias
+      path: meta.cloud.provider
+    - name: cloud.instance.id
+      type: alias
+      path: meta.cloud.instance_id
+    - name: cloud.instance.name
+      type: alias
+      path: meta.cloud.instance_name
+    - name: cloud.machine.type
+      type: alias
+      path: meta.cloud.machine_type
+    - name: cloud.availability_zone
+      type: alias
+      path: meta.cloud.availability_zone
+    - name: cloud.project.id
+      type: alias
+      path: meta.cloud.project_id
+    - name: cloud.region
+      type: alias
+      path: meta.cloud.region
+
+    # Docker processor fields
+    - name: container.id
+      type: alias
+      path: docker.container.id
+    - name: container.name
+      type: alias
+      path: docker.container.name
+    - name: container.image.name
+      type: alias
+      path: docker.container.image
+- key: cloud
+  title: Cloud provider metadata
+  description: >
+    Metadata from cloud providers added by the add_cloud_metadata processor.
+  fields:
+
+    - name: meta.cloud.provider
+      example: ec2
+      description: >
+        Name of the cloud provider. Possible values are ec2, gce, or digitalocean.
+
+    - name: meta.cloud.instance_id
+      description: >
+        Instance ID of the host machine.
+
+    - name: meta.cloud.instance_name
+      description: >
+        Instance name of the host machine.
+
+    - name: meta.cloud.machine_type
+      example: t2.medium
+      description: >
+        Machine type of the host machine.
+
+    - name: meta.cloud.availability_zone
+      example: us-east-1c
+      description: >
+        Availability zone in which this host is running.
+
+    - name: meta.cloud.project_id
+      example: project-x
+      description: >
+        Name of the project in Google Cloud.
+
+    - name: meta.cloud.region
+      description: >
+        Region in which this host is running.
+- key: docker
+  title: Docker
+  description: >
+    Docker stats collected from Docker.
+  short_config: false
+  anchor: docker-processor
+  fields:
+    - name: docker
+      type: group
+      fields:
+        - name: container.id
+          type: keyword
+          description: >
+            Unique container id.
+        - name: container.image
+          type: keyword
+          description: >
+            Name of the image the container was built on.
+        - name: container.name
+          type: keyword
+          description: >
+            Container name.
+        - name: container.labels
+          type: object
+          object_type: keyword
+          description: >
+            Image labels.
+- key: host
+  title: Host
+  description: >
+    Info collected for the host machine.
+  anchor: host-processor
+  fields:
+    - name: host
+      type: group
+      fields:
+        - name: name
+          type: keyword
+          description: >
+            Hostname.
+        - name: id
+          type: keyword
+          description: >
+            Unique host id.
+        - name: architecture
+          type: keyword
+          description: >
+            Host architecture (e.g. x86_64, arm, ppc, mips).
+        - name: containerized
+          type: boolean
+          description: >
+            If the host is a container.
+        - name: os.platform
+          type: keyword
+          description: >
+            OS platform (e.g. centos, ubuntu, windows).
+        - name: os.name
+          type: keyword
+          description: >
+            Operating system name (e.g. "Mac OS X").
+        - name: os.build
+          type: keyword
+          description: >
+            OS build information (e.g. "18D109").
+        - name: os.version
+          type: keyword
+          description: >
+            OS version.
+        - name: os.family
+          type: keyword
+          description: >
+            OS family (e.g. redhat, debian, freebsd, windows).
+        - name: ip
+          type: ip
+          description: >
+            List of IP-addresses.
+        - name: mac
+          type: keyword
+          description: >
+            List of hardware-addresses, usually MAC-addresses.
+- key: kubernetes
+  title: Kubernetes
+  description: >
+    Kubernetes metadata added by the kubernetes processor
+  short_config: false
+  anchor: kubernetes-processor
+  fields:
+    - name: kubernetes
+      type: group
+      fields:
+        - name: pod.name
+          type: keyword
+          description: >
+            Kubernetes pod name
+
+        - name: pod.uid
+          type: keyword
+          description: >
+            Kubernetes Pod UID
+
+        - name: namespace
+          type: keyword
+          description: >
+            Kubernetes namespace
+
+        - name: node.name
+          type: keyword
+          description: >
+            Kubernetes node name
+
+        - name: labels
+          type: object
+          description: >
+            Kubernetes labels map
+
+        - name: annotations
+          type: object
+          description: >
+            Kubernetes annotations map
+
+        - name: container.name
+          type: keyword
+          description: >
+            Kubernetes container name
+
+        - name: container.image
+          type: keyword
+          description: >
+            Kubernetes container image
+- key: apache2
+  title: "Apache2"
+  description: >
+    Apache2 Module
+  short_config: true
+  fields:
+    - name: apache2
+      type: group
+      description: >
+        Apache2 fields.
+      fields:
+        - name: access
+          type: group
+          description: >
+            Contains fields for the Apache2 HTTPD access logs.
+          fields:
+            - name: remote_ip
+              type: keyword
+              description: >
+                Client IP address.
+            - name: ssl.protocol
+              type: keyword
+              description: >
+                SSL protocol version.
+            - name: ssl.cipher
+              type: keyword
+              description: >
+                SSL cipher name.
+            - name: user_name
+              type: keyword
+              description: >
+                The user name used when basic authentication is used.
+            - name: method
+              type: keyword
+              example: GET
+              description: >
+                The request HTTP method.
+            - name: url
+              type: keyword
+              description: >
+                The request HTTP URL.
+            - name: http_version
+              type: keyword
+              description: >
+                The HTTP version.
+            - name: response_code
+              type: long
+              description: >
+                The HTTP response code.
+            - name: body_sent.bytes
+              type: long
+              format: bytes
+              description: >
+                The number of bytes of the server response body.
+            - name: referrer
+              type: keyword
+              description: >
+                The HTTP referrer.
+            - name: agent
+              type: text
+              description: >
+                Contains the un-parsed user agent string. Only present if the user
+                agent Elasticsearch plugin is not available or not used.
+            - name: user_agent
+              type: group
+              description: >
+                Contains the parsed User agent field. Only present if the user
+                agent Elasticsearch plugin is available and used.
+              fields:
+                - name: device
+                  type: keyword
+                  description: >
+                    The name of the physical device.
+                - name: major
+                  type: long
+                  description: >
+                    The major version of the user agent.
+                - name: minor
+                  type: long
+                  description: >
+                    The minor version of the user agent.
+                - name: patch
+                  type: keyword
+                  description: >
+                    The patch version of the user agent.
+                - name: name
+                  type: keyword
+                  example: Chrome
+                  description: >
+                    The name of the user agent.
+                - name: os
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: os_major
+                  type: long
+                  description: >
+                    The major version of the operating system.
+                - name: os_minor
+                  type: long
+                  description: >
+                    The minor version of the operating system.
+                - name: os_name
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: original
+                  type: text
+                  index: false
+                  description: >
+                    Original user agent value before parsing by ingest-user-agent plugin.
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the remote_ip field.
+                Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The region name.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The city name.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+        - name: error
+          type: group
+          description: >
+            Fields from the Apache error logs.
+          fields:
+            - name: level
+              type: keyword
+              description: >
+                The severity level of the message.
+            - name: client
+              type: keyword
+              description: >
+                The IP address of the client that generated the error.
+            - name: message
+              type: text
+              description: >
+                The logged message.
+            - name: pid
+              type: long
+              description: >
+                The process ID.
+            - name: tid
+              type: long
+              description: >
+                The thread ID.
+            - name: module
+              type: keyword
+              description: >
+                The module producing the logged message.
+- key: auditd
+  title: "Auditd"
+  description: >
+    Module for parsing auditd logs.
+  short_config: true
+  fields:
+    - name: auditd
+      type: group
+      description: >
+        Fields from the auditd logs.
+      fields:
+        - name: log
+          type: group
+          description: >
+            Fields from the Linux audit log. Not all fields are documented here because
+            they are dynamic and vary by audit event type.
+          fields:
+            - name: record_type
+              description: >
+                The audit event type.
+            - name: old_auid
+              description: >
+                For login events this is the old audit ID used for the user prior to
+                this login.
+            - name: new_auid
+              description: >
+                For login events this is the new audit ID. The audit ID can be used to
+                trace future events to the user even if their identity changes (like
+                becoming root).
+            - name: old_ses
+              description: >
+                For login events this is the old session ID used for the user prior to
+                this login.
+            - name: new_ses
+              description: >
+                For login events this is the new session ID. It can be used to tie a
+                user to future events by session ID.
+            - name: sequence
+              type: long
+              description: >
+                The audit event sequence number.
+            - name: acct
+              description: >
+                The user account name associated with the event.
+            - name: pid
+              description: >
+                The ID of the process.
+            - name: ppid
+              description: >
+                The ID of the process.
+            - name: items
+              description: >
+                The number of items in an event.
+            - name: item
+              description: >
+                The item field indicates which item out of the total number of items.
+                This number is zero-based; a value of 0 means it is the first item.
+            - name: a0
+              description: >
+                The first argument to the system call.
+            - name: res
+              description: >
+                The result of the system call (success or failure).
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the `auditd.log.addr`
+                field. Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The name of the city.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The name of the region.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+- key: elasticsearch
+  title: "elasticsearch"
+  description: >
+    elasticsearch Module
+  fields:
+    - name: elasticsearch
+      type: group
+      description: >
+      fields:
+        - name: node.id
+          description: "ID of the node"
+          example: "DSiWcTyeThWtUXLB9J0BMw"
+          type: keyword
+        - name: node.name
+          description: "Name of the node"
+          example: "vWNJsZ3"
+          type: keyword
+        - name: index.name
+          description: "Index name"
+          example: "filebeat-test-input"
+          type: keyword
+        - name: index.id
+          description: "Index id"
+          example: "aOGgDwbURfCV57AScqbCgw"
+          type: keyword
+        - name: shard.id
+          description: "Id of the shard"
+          example: "0"
+          type: keyword
+        - name: audit
+          type: group
+          description: >
+          fields:
+            - name: layer
+              description: "The layer from which this event originated: rest, transport or ip_filter"
+              example: "rest"
+              type: keyword
+            - name: event_type
+              description: "The type of event that occurred: anonymous_access_denied, authentication_failed, access_denied, access_granted, connection_granted, connection_denied, tampered_request, run_as_granted, run_as_denied"
+              example: "access_granted"
+              type: keyword
+            - name: origin_type
+              description: "Where the request originated: rest (request originated from a REST API request), transport (request was received on the transport channel), local_node (the local node issued the request)"
+              example: "local_node"
+              type: keyword
+            - name: origin_address
+              description: "The IP address from which the request originated"
+              example: "192.168.1.42"
+              type: ip
+            - name: origin_port
+              description: "The TCP port from which the request originated"
+              example: 9300
+              type: integer
+            - name: principal
+              description: "The principal (username) that failed authentication"
+              example: "_anonymous"
+              type: keyword
+            - name: realm
+              description: "The authentication realm"
+              example": "active_directory"
+              type: keyword
+            - name: roles
+              description: "Roles to which the principal belongs"
+              example: [ "kibana_user", "beats_admin" ]
+              type: keyword
+            - name: action
+              description: "The name of the action that was executed"
+              example: "cluster:monitor/main"
+              type: keyword
+            - name: uri
+              description: "The REST endpoint URI"
+              example: /_xpack/security/_authenticate
+              type: keyword
+            - name: uri_params
+              description: "REST URI parameters"
+              example: "{username=jacknich2}"
+              type: text
+            - name: indices
+              description: "Indices accessed by action"
+              example: [ "foo-2019.01.04", "foo-2019.01.03", "foo-2019.01.06" ]
+              type: keyword
+            - name: request_id
+              description: "Unique ID of request"
+              example: "WzL_kb6VSvOhAq0twPvHOQ"
+              type: keyword
+            - name: request_method
+              description: "Method of HTTP request"
+              example: "GET"
+              type: keyword
+            - name: request
+              description: "The type of request that was executed"
+              example: "ClearScrollRequest"
+              type: keyword
+            - name: request_body
+              description: "The body of the request, if enabled"
+              example: "body"
+              type: text
+            - name: user_realm
+              description: "The name of the realm that authenticated the user"
+              example: "__attach"
+              type: keyword
+        - name: deprecation
+          type: group
+          description: >
+          fields:
+        - name: gc
+          type: group
+          description: >
+            GC fileset fields.
+          fields:
+            - name: phase
+              type: group
+              description: >
+                Fields specific to GC phase.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the GC collection phase.
+                - name: duration_sec
+                  type: float
+                  description: >
+                    Collection phase duration according to the Java virtual machine.
+                - name: scrub_symbol_table_time_sec
+                  type: float
+                  description: >
+                     Pause time in seconds cleaning up symbol tables.
+                - name: scrub_string_table_time_sec
+                  type: float
+                  description: >
+                    Pause time in seconds cleaning up string tables.
+                - name: weak_refs_processing_time_sec
+                  type: float
+                  description: >
+                    Time spent processing weak references in seconds.
+                - name: parallel_rescan_time_sec
+                  type: float
+                  description: >
+                    Time spent in seconds marking live objects while application is stopped.
+                - name: class_unload_time_sec
+                  type: float
+                  description: >
+                    Time spent unloading unused classes in seconds.
+                - name: cpu_time
+                  type: group
+                  description: >
+                    Process CPU time spent performing collections.
+                  fields:
+                    - name: user_sec
+                      type: float
+                      description: >
+                        CPU time spent outside the kernel.
+                    - name: sys_sec
+                      type: float
+                      description: >
+                        CPU time spent inside the kernel. 
+                    - name: real_sec
+                      type: float
+                      description: >
+                        Total elapsed CPU time spent to complete the collection from start to finish.
+            - name: jvm_runtime_sec
+              type: float
+              description: >
+                The time from JVM start up in seconds, as a floating point number.
+            - name: threads_total_stop_time_sec
+              type: float
+              description: >
+                Garbage collection threads total stop time seconds.
+            - name: stopping_threads_time_sec
+              type: float
+              description: >
+                Time took to stop threads seconds.
+            - name: tags
+              type: keyword
+              description: >
+                GC logging tags.
+            - name: heap
+              type: group
+              description: >
+                Heap allocation and total size.
+              fields:
+                - name: size_kb
+                  type: integer
+                  description: >
+                    Total heap size in kilobytes.
+                - name: used_kb
+                  type: integer
+                  description: >
+                    Used heap in kilobytes.
+            - name: old_gen
+              type: group
+              description: >
+                Old generation occupancy and total size.
+              fields:
+                - name: size_kb
+                  type: integer
+                  description: >
+                    Total size of old generation in kilobytes.
+                - name: used_kb
+                  type: integer
+                  description: >
+                    Old generation occupancy in kilobytes.
+            - name: young_gen
+              type: group
+              description: >
+                Young generation occupancy and total size.
+              fields:
+                - name: size_kb
+                  type: integer
+                  description: >
+                    Total size of young generation in kilobytes.
+                - name: used_kb
+                  type: integer
+                  description: >
+                    Young generation occupancy in kilobytes.
+        - name: server
+          description: "Server log file"
+          type: group
+          fields:
+          - name: component
+            description: "Log component"
+            example: "o.e.c.m.MetaDataCreateIndexService"
+            type: keyword
+          - name: gc
+            description: "GC log"
+            type: group
+            fields:
+            - name: young
+              description: "Young GC"
+              example: ""
+              type: group
+              fields:
+              - name: one
+                description: ""
+                example: ""
+                type: long
+              - name: two
+                description: ""
+                example: ""
+                type: long
+            - name: overhead_seq
+              description: "Sequence number"
+              example: 3449992
+              type: long
+            - name: collection_duration.ms
+              description: "Time spent in GC, in milliseconds"
+              example: 1600
+              type: float
+            - name: observation_duration.ms
+              description: "Total time over which collection was observed, in milliseconds"
+              example: 1800
+              type: float
+        - name: slowlog
+          description: "Slowlog events from Elasticsearch"
+          example: "[2018-06-29T10:06:14,933][INFO ][index.search.slowlog.query] [v_VJhjV] [metricbeat-6.3.0-2018.06.26][0] took[4.5ms], took_millis[4], total_hits[19435], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{\"query\":{\"match_all\":{\"boost\":1.0}}}],"
+          type: group
+          fields:
+          - name: logger
+            description: "Logger name"
+            example: "index.search.slowlog.fetch"
+            type: keyword
+          - name: took
+            description: "Time it took to execute the query"
+            example: "300ms"
+            type: text
+          - name: types
+            description: "Types"
+            example: ""
+            type: keyword
+          - name: stats
+            description: "Statistics"
+            example: ""
+            type: text
+          - name: search_type
+            description: "Search type"
+            example: "QUERY_THEN_FETCH"
+            type: keyword
+          - name: source_query
+            description: "Slow query"
+            example: "{\"query\":{\"match_all\":{\"boost\":1.0}}}"
+            type: text
+          - name: extra_source
+            description: "Extra source information"
+            example: ""
+            type: text
+          - name: took_millis
+            description: "Time took in milliseconds"
+            example: 42
+            type: keyword
+          - name: total_hits
+            description: "Total hits"
+            example: 42
+            type: keyword
+          - name: total_shards
+            description: "Total queried shards"
+            example: 22
+            type: keyword
+          - name: routing
+            description: "Routing"
+            example: "s01HZ2QBk9jw4gtgaFtn"
+            type: keyword
+          - name: id
+            description: Id
+            example: ""
+            type: keyword
+          - name: type
+            description: "Type"
+            example: "doc"
+            type: keyword
+- key: haproxy
+  title: "haproxy"
+  description: >
+    haproxy Module
+  fields: 
+    - name: haproxy
+      type: group
+      description: >
+      fields:
+
+        - name: destination
+          description: Destination information
+          type: group
+          fields:
+          - name: port
+            description: Port of the destination host
+            type: long
+
+          - name: ip
+            description: IP of the destination host
+
+        - name: process_name
+          description: Name of the process
+
+        - name: pid
+          description: PID of the process
+          type: long
+
+        - name: client
+          description: Information about the client doing the request
+          type: group
+          fields:
+          - name: ip
+            description: IP address of the client which initiated the TCP connection to haproxy.
+
+          - name: port
+            description: TCP port of the client which initiated the connection.
+            type: long
+
+        - name: frontend_name
+          description: Name of the frontend (or listener) which received and processed the connection.
+
+        - name: backend_name
+          description: Name of the backend (or listener) which was selected to manage the connection to the server.
+
+        - name: server_name
+          description: Name of the last server to which the connection was sent.
+
+        - name: total_waiting_time_ms
+          description: Total time in milliseconds spent waiting in the various queues
+          type: long
+
+        - name: connection_wait_time_ms
+          description: Total time in milliseconds spent waiting for the connection to establish to the final server
+          type: long
+
+        - name: bytes_read
+          description: Total number of bytes transmitted to the client when the log is emitted.
+          type: long
+
+        - name: time_queue
+          description: Total time in milliseconds spent waiting in the various queues.
+          type: long
+
+        - name: time_backend_connect
+          description: Total time in milliseconds spent waiting for the connection to establish to the final server, including retries.
+          type: long
+
+        - name: server_queue
+          description: Total number of requests which were processed before this one in the server queue.
+          type: long
+
+        - name: backend_queue
+          description: Total number of requests which were processed before this one in the backend's global queue.
+          type: long
+
+        - name: bind_name
+          description: Name of the listening address which received the connection.
+
+        - name: error_message
+          description: Error message logged by HAProxy in case of error.
+          type: text
+          
+        - name: source
+          type: text
+          description: The HAProxy source of the log
+        
+        - name: geoip
+          type: group
+          description: >
+            Contains GeoIP information gathered based on the client.ip field.
+            Only present if the GeoIP Elasticsearch plugin is available and
+            used.
+          fields:
+            - name: continent_name
+              type: keyword
+              description: Name of the continent.
+            - name: country_iso_code
+              type: keyword
+              description: Country ISO code.
+            - name: location
+              type: geo_point
+              description: Represents a geopoint with the longitude and latitude.
+            - name: region_name
+              type: keyword
+              description: Name of the region
+            - name: city_name
+              type: keyword
+              description: City name.
+            - name: region_iso_code
+              type: keyword
+              description: ISO code of the region
+
+        - name: termination_state
+          description: Condition the session was in when the session ended.
+
+        - name: connections
+          description: Contains various counts of connections active in the process.
+          type: group
+          fields:
+            - name: active
+              description: Total number of concurrent connections on the process when the session was logged.
+              type: long
+
+            - name: frontend
+              description: Total number of concurrent connections on the frontend when the session was logged.
+              type: long
+
+            - name: backend
+              description: Total number of concurrent connections handled by the backend when the session was logged.
+              type: long
+
+            - name: server
+              description: Total number of concurrent connections still active on the server when the session was logged.
+              type: long
+
+            - name: retries
+              description: Number of connection retries experienced by this session when trying to connect to the server.
+              type: long
+        - name: mode
+          type: text
+          description: mode that the frontend is operating (TCP or HTTP)
+        - name: http
+          description: Please add description
+          type: group
+          fields: 
+        
+          - name: response
+            description: Fields related to the HTTP response
+            type: group
+            fields:
+            - name: status_code
+              description: HTTP status code returned to the client.
+              type: long
+        
+            - name: captured_cookie
+              description: >
+                Optional "name=value" entry indicating that the client had this cookie in the response.
+        
+            - name: captured_headers
+              description: >
+                List of headers captured in the response due to the presence of the "capture response header" statement in the frontend.
+              type: text
+        
+          - name: request
+            description: Fields related to the HTTP request
+            type: group
+            fields:
+            - name: captured_cookie
+              description: >
+                Optional "name=value" entry indicating that the server has returned a cookie with its request.
+        
+            - name: captured_headers
+              description: >
+                List of headers captured in the request due to the presence of the "capture request header" statement in the frontend.
+              type: text
+        
+            - name: raw_request_line
+              description: Complete HTTP request line, including the method, request and HTTP version string.
+              type: text
+              
+            - name: time_active_ms
+              description: Time the request remained active in haproxy, which is the total time in milliseconds elapsed between the first byte of the request was received and the last byte of response was sent.
+              type: long
+        
+            - name: time_wait_without_data_ms
+              description: Total time in milliseconds spent waiting for the server to send a full HTTP response, not counting data.
+              type: long
+        
+            - name: time_wait_ms
+              description: Total time in milliseconds spent waiting for a full HTTP request from the client (not counting body) after the first byte was received.
+              type: long
+        
+        - name: tcp
+          description: TCP log format
+          type: group
+          fields:
+          - name: processing_time_ms
+            type: long
+            description: Total time in milliseconds elapsed between the accept and the last close
+          - name: connection_waiting_time_ms
+            type: long
+            description: Total time in milliseconds elapsed between the accept and the last close
+- key: icinga
+  title: "Icinga"
+  description: >
+    Icinga Module
+  fields:
+    - name: icinga
+      type: group
+      description: >
+      fields:
+        - name: debug
+          type: group
+          description: >
+            Contains fields for the Icinga debug logs.
+          fields:
+            - name: facility
+              type: keyword
+              description: >
+                Specifies what component of Icinga logged the message.
+            - name: severity
+              type: keyword
+              description: >
+                Possible values are "debug", "notice", "information", "warning" or
+                "critical".
+            - name: message
+              type: text
+              description: >
+                The logged message.
+        - name: main
+          type: group
+          description: >
+            Contains fields for the Icinga main logs.
+          fields:
+            - name: facility
+              type: keyword
+              description: >
+                Specifies what component of Icinga logged the message.
+            - name: severity
+              type: keyword
+              description: >
+                Possible values are "debug", "notice", "information", "warning" or
+                "critical".
+            - name: message
+              type: text
+              description: >
+                The logged message.
+        - name: startup
+          type: group
+          description: >
+            Contains fields for the Icinga startup logs.
+          fields:
+            - name: facility
+              type: keyword
+              description: >
+                Specifies what component of Icinga logged the message.
+            - name: severity
+              type: keyword
+              description: >
+                Possible values are "debug", "notice", "information", "warning" or
+                "critical".
+            - name: message
+              type: text
+              description: >
+                The logged message.
+- key: iis
+  title: "IIS"
+  description: >
+    Module for parsing IIS log files.
+  fields:
+    - name: iis
+      type: group
+      description: >
+        Fields from IIS log files.
+      fields:
+        - name: access
+          type: group
+          description: >
+            Contains fields for IIS access logs.
+          fields:
+            - name: server_ip
+              type: keyword
+              description: >
+                The server IP address.
+            - name: method
+              type: keyword
+              example: GET
+              description: >
+                The request HTTP method.
+            - name: url
+              type: keyword
+              description: >
+                The request HTTP URL.
+            - name: query_string
+              type: keyword
+              description: >
+                The request query string, if any.
+            - name: port
+              type: long
+              description: >
+                The request port number.
+            - name: user_name
+              type: keyword
+              description: >
+                The user name used when basic authentication is used.
+            - name: remote_ip
+              type: keyword
+              description: >
+                The client IP address.
+            - name: referrer
+              type: keyword
+              description: >
+                The HTTP referrer.
+            - name: response_code
+              type: long
+              description: >
+                The HTTP response code.
+            - name: sub_status
+              type: long
+              description: >
+                The HTTP substatus code.
+            - name: win32_status
+              type: long
+              description: >
+                The Windows status code.
+            - name: request_time_ms
+              type: long
+              description: >
+                The request time in milliseconds.
+            - name: site_name
+              type: keyword
+              description: >
+                The site name and instance number.
+            - name: server_name
+              type: keyword
+              description: >
+                The name of the server on which the log file entry was generated.
+            - name: http_version
+              type: keyword
+              description: >
+                The HTTP version.
+            - name: cookie
+              type: keyword
+              description: >
+                The content of the cookie sent or received, if any.
+            - name: hostname
+              type: keyword
+              description: >
+                The host header name, if any.
+            - name: body_sent.bytes
+              type: long
+              format: bytes
+              description: >
+                The number of bytes of the server response body.
+            - name: body_received.bytes
+              type: long
+              format: bytes
+              description: >
+                The number of bytes of the server request body.
+            - name: agent
+              type: text
+              description: >
+                Contains the un-parsed user agent string. Only present if the user
+                agent Elasticsearch plugin is not available or not used.
+            - name: user_agent
+              type: group
+              description: >
+                Contains the parsed user agent field. Only present if the user
+                agent Elasticsearch plugin is available and used.
+              fields:
+                - name: device
+                  type: keyword
+                  description: >
+                    The name of the physical device.
+                - name: major
+                  type: long
+                  description: >
+                    The major version of the user agent.
+                - name: minor
+                  type: long
+                  description: >
+                    The minor version of the user agent.
+                - name: patch
+                  type: keyword
+                  description: >
+                    The patch version of the user agent.
+                - name: name
+                  type: keyword
+                  example: Chrome
+                  description: >
+                    The name of the user agent.
+                - name: os
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: os_major
+                  type: long
+                  description: >
+                    The major version of the operating system.
+                - name: os_minor
+                  type: long
+                  description: >
+                    The minor version of the operating system.
+                - name: os_name
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: original
+                  type: text
+                  index: false
+                  description: >
+                    Original user agent value before parsing by ingest-user-agent plugin.
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the remote_ip field.
+                Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The region name.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The city name.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+        - name: error
+          type: group
+          description: >
+            Contains fields for IIS error logs.
+          fields:
+            - name: remote_ip
+              type: keyword
+              description: >
+                The client IP address.
+            - name: remote_port
+              type: long
+              description: >
+                The client port number.
+            - name: server_ip
+              type: keyword
+              description: >
+                The server IP address.
+            - name: server_port
+              type: long
+              description: >
+                The server port number.
+            - name: http_version
+              type: keyword
+              description: >
+                The HTTP version.
+            - name: method
+              type: keyword
+              example: GET
+              description: >
+                The request HTTP method.
+            - name: url
+              type: keyword
+              description: >
+                The request HTTP URL.
+            - name: response_code
+              type: long
+              description: >
+                The HTTP response code.
+            - name: reason_phrase
+              type: keyword
+              description: >
+                The HTTP reason phrase.
+            - name: queue_name
+              type: keyword
+              description: >
+                The IIS application pool name.
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the remote_ip field.
+                Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The region name.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The city name.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+- key: kafka
+  title: "Kafka"
+  description: >
+    Kafka module
+  fields:
+    - name: kafka
+      type: group
+      description: >
+      fields:
+        - name: log
+          type: group
+          description: >
+            Kafka log lines.
+          fields:
+            - name: timestamp
+              description: >
+                The timestamp from the log line.
+            - name: level
+              example: "WARN"
+              description: >
+                The log level.
+            - name: message
+              type: text
+              description: >
+                The logged message.
+            - name: component
+              type: keyword
+              description: >
+                Component the log is coming from.
+            - name: class
+              type: text
+              description: >
+                Java class the log is coming from.
+            - name: trace
+              type: group
+              description: >
+                  Trace in the log line.
+              fields:
+                - name: class
+                  type: keyword
+                  description: >
+                    Java class the trace is coming from.
+                - name: message
+                  type: text
+                  description: >
+                      Message part of the trace.
+                - name: full
+                  type: text
+                  description: >
+                      The full trace in the log line.
+- key: kibana
+  title: "kibana"
+  description: >
+    kibana Module
+  fields:
+    - name: kibana
+      type: group
+      description: >
+      fields:
+        - name: log
+          type: group
+          description: >
+            Kafka log lines.
+          fields:
+            - name: tags
+              type: keyword
+              description: >
+                Kibana logging tags.
+            - name: state
+              type: keyword
+              description: >
+                Current state of Kibana.
+            - name: meta
+              type: object
+              object_type: keyword
+- key: logstash
+  title: "logstash"
+  description: >
+    logstash Module
+  fields:
+    - name: logstash
+      type: group
+      description: >
+      fields:
+        - name: log
+          title: "Logstash"
+          type: group
+          description: >
+            Fields from the Logstash logs.
+          fields:
+            - name: message
+              type: text
+              description: >
+                Contains the un-parsed log message
+            - name: level
+              type: keyword
+              description: >
+                The log level of the message, this correspond to Log4j levels.
+            - name: module
+              type: keyword
+              description: >
+                The module or class where the event originate.
+            - name: thread
+              type: text
+              description: >
+                Information about the running thread where the log originate.
+            - name: log_event
+              type: object
+              description: >
+                key and value debugging information.
+        
+        - name: slowlog
+          type: group
+          description: >
+            slowlog
+          fields:
+            - name: message
+              type: text
+              description: >
+                Contains the un-parsed log message
+            - name: level
+              type: keyword
+              description: >
+                The log level of the message, this correspond to Log4j levels.
+            - name: module
+              type: keyword
+              description: >
+                The module or class where the event originate.
+            - name: thread
+              type: text
+              description: >
+                Information about the running thread where the log originate.
+            - name: event
+              type: text
+              description: >
+                Raw dump of the original event
+            - name: plugin_name
+              type: keyword
+              description: >
+                Name of the plugin
+            - name: plugin_type
+              type: keyword
+              description: >
+                Type of the plugin: Inputs, Filters, Outputs or Codecs.
+            - name: took_in_millis
+              type: long
+              description: >
+                Execution time for the plugin in milliseconds.
+            - name: took_in_nanos
+              type: long
+              description: >
+                Execution time for the plugin in nanoseconds.
+            - name: plugin_params
+              type: text
+              description: >
+                String value of the plugin configuration
+            - name: plugin_params_object
+              type: object
+              description: >
+                key -> value of the configuration used by the plugin.
+        
+        
+        
+        
+        
+- key: mongodb
+  title: "mongodb"
+  description: >
+    Module for parsing MongoDB log files.
+  fields:
+    - name: mongodb
+      type: group
+      description: >
+          Fields from MongoDB logs.
+      fields:
+        - name: log
+          type: group
+          description: >
+              Contains fields from MongoDB logs.
+          fields:
+          - name: severity
+            description: >
+                Severity level of message
+            example: I
+            type: keyword
+          - name: component
+            description: >
+                Functional categorization of message
+            example: COMMAND
+            type: keyword
+          - name: context
+            description: >
+                Context of message
+            example: initandlisten
+            type: keyword
+          - name: message
+            description: >
+                The message in the log line.
+            type: text
+- key: mysql
+  title: "MySQL"
+  description: >
+    Module for parsing the MySQL log files.
+  short_config: true
+  fields:
+    - name: mysql
+      type: group
+      description: >
+        Fields from the MySQL log files.
+      fields:
+        - name: error
+          type: group
+          description: >
+            Contains fields from the MySQL error logs.
+          fields:
+            - name: timestamp
+              description: >
+                The timestamp from the log line.
+            - name: thread_id
+              type: long
+              description: >
+                As of MySQL 5.7.2, this is the thread id. For MySQL versions prior to 5.7.2, this
+                field contains the process id.
+            - name: level
+              example: "Warning"
+              description:
+                The log level.
+            - name: message
+              type: text
+              description: >
+                The logged message.
+        - name: slowlog
+          type: group
+          description: >
+            Contains fields from the MySQL slow logs.
+          fields:
+            - name: user
+              description: >
+                The MySQL user that created the query.
+            - name: host
+              description: >
+                The host from where the user that created the query logged in.
+            - name: ip
+              description: >
+                The IP address from where the user that created the query logged in.
+            - name: query_time.sec
+              type: float
+              description: >
+                The total time the query took, in seconds, as a floating point number.
+            - name: lock_time.sec
+              type: float
+              description: >
+                The amount of time the query waited for the lock to be available. The
+                value is in seconds, as a floating point number.
+            - name: rows_sent
+              type: long
+              description: >
+                The number of rows returned by the query.
+            - name: rows_examined
+              type: long
+              description: >
+                The number of rows scanned by the query.
+            - name: rows_affected
+              type: long
+              description: >
+                The number of rows modified by the query.
+            - name: timestamp
+              type: long
+              description: >
+                The unix timestamp taken from the `SET timestamp` query.
+            - name: bytes_sent
+              type: long
+              format: bytes
+              description: >
+                The size of the query result.
+            - name: query
+              description: >
+                The slow query.
+            - name: id
+              type: long
+              description: >
+                The connection or thread ID for the query.
+            - name: schema
+              type: keyword
+              description: >
+                The schema where the slow query was executed.
+            - name: current_user
+              type: keyword
+              description: >
+                Current authenticated user, used to determine access privileges. Can differ from the value for user.
+            - name: last_errno
+              type: keyword
+              description: >
+                Last SQL error seen.
+            - name: killed
+              type: keyword
+              description: >
+                Code of the reason if the query was killed.
+        
+            - name: query_cache_hit
+              type: boolean
+              description: >
+                Whether the query cache was hit.
+            - name: tmp_table
+              type: boolean
+              description: >
+                Whether a temporary table was used to resolve the query.
+            - name: tmp_table_on_disk
+              type: boolean
+              description: >
+                Whether the query needed temporary tables on disk.
+            - name: tmp_tables
+              type: long
+              description: > 
+                Number of temporary tables created for this query
+            - name: tmp_disk_tables
+              type: long
+              description: >
+                Number of temporary tables created on disk for this query.
+            - name: tmp_table_sizes
+              type: long
+              format: bytes
+              description: 
+                Size of temporary tables created for this query.
+            - name: filesort
+              type: boolean
+              description: >
+                Whether filesort optimization was used.
+            - name: filesort_on_disk
+              type: boolean
+              description: >
+                Whether filesort optimization was used and it needed temporary tables on disk.
+            - name: priority_queue
+              type: boolean
+              description: >
+                Whether a priority queue was used for filesort.
+            - name: full_scan
+              type: boolean
+              description: >
+                Whether a full table scan was needed for the slow query.
+            - name: full_join
+              type: boolean
+              description: >
+                Whether a full join was needed for the slow query (no indexes were used for joins).
+            - name: merge_passes
+              type: long
+              description: >
+                Number of merge passes executed for the query.
+            - name: log_slow_rate_type
+              type: keyword
+              description: >
+                Type of slow log rate limit, it can be `session` if the rate limit
+                is applied per session, or `query` if it applies per query.
+            - name: log_slow_rate_limit
+              type: keyword
+              description: >
+                Slow log rate limit, a value of 100 means that one in a hundred queries
+                or sessions are being logged.
+        
+            # https://www.percona.com/doc/percona-server/5.7/diagnostics/slow_extended.html
+            - name: innodb
+              type: group
+              description: >
+                Contains fields relative to InnoDB engine
+              fields:
+                - name: trx_id
+                  type: keyword
+                  description: >
+                    Transaction ID
+                - name: io_r_ops
+                  type: long
+                  description: >
+                    Number of page read operations.
+                - name: io_r_bytes
+                  type: long
+                  format: bytes
+                  description: >
+                    Bytes read during page read operations.
+                - name: io_r_wait.sec
+                  type: long
+                  description: >
+                    How long it took to read all needed data from storage.
+                - name: rec_lock_wait.sec
+                  type: long
+                  description: >
+                    How long the query waited for locks.
+                - name: queue_wait.sec
+                  type: long
+                  description: >
+                    How long the query waited to enter the InnoDB queue and to be executed once
+                    in the queue.
+                - name: pages_distinct
+                  type: long
+                  description: >
+                    Approximated count of pages accessed to execute the query.
+- key: nginx
+  title: "Nginx"
+  description: >
+    Module for parsing the Nginx log files.
+  short_config: true
+  fields:
+    - name: nginx
+      type: group
+      description: >
+        Fields from the Nginx log files.
+      fields:
+        - name: access
+          type: group
+          description: >
+            Contains fields for the Nginx access logs.
+          fields:
+            - name: remote_ip_list
+              type: array
+              description: >
+                An array of remote IP addresses. It is a list because it is common to include, besides the client
+                IP address, IP addresses from headers like `X-Forwarded-For`. See also the `remote_ip` field.
+            - name: remote_ip
+              type: keyword
+              description: >
+                Client IP address. The first public IP address from the `remote_ip_list` array. If no public IP
+                addresses are present, this field contains the first private IP address from the `remote_ip_list`
+                array.
+            - name: user_name
+              type: keyword
+              description: >
+                The user name used when basic authentication is used.
+            - name: method
+              type: keyword
+              example: GET
+              description: >
+                The request HTTP method.
+            - name: url
+              type: keyword
+              description: >
+                The request HTTP URL.
+            - name: http_version
+              type: keyword
+              description: >
+                The HTTP version.
+            - name: response_code
+              type: long
+              description: >
+                The HTTP response code.
+            - name: body_sent.bytes
+              type: long
+              format: bytes
+              description: >
+                The number of bytes of the server response body.
+            - name: referrer
+              type: keyword
+              description: >
+                The HTTP referrer.
+            - name: agent
+              type: text
+              description: >
+                Contains the un-parsed user agent string. Only present if the user
+                agent Elasticsearch plugin is not available or not used.
+            - name: user_agent
+              type: group
+              description: >
+                Contains the parsed User agent field. Only present if the user
+                agent Elasticsearch plugin is available and used.
+              fields:
+                - name: device
+                  type: keyword
+                  description: >
+                    The name of the physical device.
+                - name: major
+                  type: long
+                  description: >
+                    The major version of the user agent.
+                - name: minor
+                  type: long
+                  description: >
+                    The minor version of the user agent.
+                - name: patch
+                  type: keyword
+                  description: >
+                    The patch version of the user agent.
+                - name: name
+                  type: keyword
+                  example: Chrome
+                  description: >
+                    The name of the user agent.
+                - name: os
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: os_major
+                  type: long
+                  description: >
+                    The major version of the operating system.
+                - name: os_minor
+                  type: long
+                  description: >
+                    The minor version of the operating system.
+                - name: os_name
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: original
+                  type: text
+                  index: false
+                  description: >
+                    Original user agent value before parsing by ingest-user-agent plugin.
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the remote_ip field.
+                Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The region name.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The city name.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+        - name: error
+          type: group
+          description: >
+            Contains fields for the Nginx error logs.
+          fields:
+            - name: level
+              type: keyword
+              description: >
+                Error level (e.g. error, critical).
+            - name: pid
+              type: long
+              description: >
+                Process identifier (PID).
+            - name: tid
+              type: long
+              description: >
+                Thread identifier.
+            - name: connection_id
+              type: long
+              description: >
+                Connection identifier.
+            - name: message
+              type: text
+              description: >
+                The error message
+- key: osquery
+  title: "Osquery"
+  description: >
+    Fields exported by the `osquery` module
+  fields:
+    - name: osquery
+      type: group
+      description: >
+      fields:
+        - name: result
+          type: group
+          description: >
+            Common fields exported by the result metricset.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                The name of the query that generated this event.
+            - name: action
+              type: keyword
+              description: >
+                For incremental data, marks whether the entry was added
+                or removed. It can be one of "added", "removed", or "snapshot".
+            - name: host_identifier
+              type: keyword
+              description: >
+                The identifier for the host on which the osquery agent is running.
+                Normally the hostname.
+            - name: unix_time
+              type: long
+              description: >
+                Unix timestamp of the event, in seconds since the epoch. Used for computing the `@timestamp` column.
+            - name: calendar_time
+              tupe: keyword
+              description: >
+                String representation of the collection time, as formatted by osquery.
+- key: postgresql
+  title: "PostgreSQL"
+  description: >
+    Module for parsing the PostgreSQL log files.
+  short_config: true
+  fields:
+    - name: postgresql
+      type: group
+      description: >
+          Fields from PostgreSQL logs.
+      fields:
+        - name: log
+          type: group
+          description: >
+            Fields from the PostgreSQL log files.
+          fields:
+            - name: timestamp
+              description: >
+                The timestamp from the log line.
+            - name: timezone
+              description: >
+                The timezone of timestamp.
+            - name: thread_id
+              type: long
+              description: >
+                Process id
+            - name: core_id
+              type: long
+              description: >
+                Core id
+            - name: user
+              example: "admin"
+              description:
+                Name of user
+            - name: database
+              example: "mydb"
+              description:
+                Name of database
+            - name: level
+              example: "FATAL"
+              description:
+                The log level.
+            - name: duration
+              type: float
+              example: "30.0"
+              description:
+                Duration of a query.
+            - name: query
+              example: "SELECT * FROM users;"
+              description:
+                Query statement.
+            - name: message
+              type: text
+              description: >
+                The logged message.
+- key: redis
+  title: "Redis"
+  description: >
+    Redis Module
+  fields:
+    - name: redis
+      type: group
+      description: >
+      fields:
+        - name: log
+          type: group
+          description: >
+            Redis log files
+          fields:
+            - name: pid
+              type: long
+              description: >
+                The process ID of the Redis server.
+            - name: role
+              type: keyword
+              description: >
+                The role of the Redis instance. Can be one of `master`, `slave`, `child` (for RDF/AOF writing child),
+                or `sentinel`.
+            - name: level
+              type: keyword
+              description: >
+                The log level. Can be one of `debug`, `verbose`, `notice`, or `warning`.
+            - name: message
+              type: text
+              description: >
+                The log message
+        - name: slowlog
+          type: group
+          description: >
+            Slow logs are retrieved from Redis via a network connection.
+          fields:
+            - name: cmd
+              type: keyword
+              description: >
+                The command executed.
+            - name: duration.us
+              type: long
+              description: >
+                How long it took to execute the command in microseconds.
+            - name: id
+              type: long
+              description: >
+                The ID of the query.
+            - name: key
+              type: keyword
+              description: >
+                The key on which the command was executed.
+            - name: args
+              type: keyword
+              description: >
+                The arguments with which the command was called.
+- key: system
+  title: "System"
+  description: >
+    Module for parsing system log files.
+  short_config: true
+  fields:
+    - name: system
+      type: group
+      description: >
+        Fields from the system log files.
+      fields:
+        - name: auth
+          type: group
+          description: >
+            Fields from the Linux authorization logs.
+          fields:
+            - name: timestamp
+              description: >
+                The timestamp as read from the auth message.
+            - name: hostname
+              description: >
+                The hostname as read from the auth message.
+            - name: program
+              description: >
+                The process name as read from the auth message.
+            - name: pid
+              type: long
+              description: >
+                The PID of the process that sent the auth message.
+            - name: message
+              type: text
+              description: >
+                The message in the log line.
+            - name: user
+              description: >
+                The Unix user that this event refers to.
+        
+            - name: ssh
+              type: group
+              description: >
+                Fields specific to SSH login events.
+              fields:
+              - name: event
+                description: >
+                  The SSH login event. Can be one of "Accepted", "Failed", or "Invalid". "Accepted"
+                  means a successful login. "Invalid" means that the user is not configured on the
+                  system. "Failed" means that the SSH login attempt has failed.
+              - name: method
+                description: >
+                  The SSH authentication method. Can be one of "password" or "publickey".
+              - name: ip
+                type: ip
+                description: >
+                  The client IP from where the login attempt was made.
+              - name: dropped_ip
+                type: ip
+                description: >
+                  The client IP from SSH connections that are open and immediately dropped.
+              - name: port
+                type: long
+                description: >
+                  The client port from where the login attempt was made.
+              - name: signature
+                description: >
+                  The signature of the client public key.
+              - name: geoip
+                type: group
+                description: >
+                  Contains GeoIP information gathered based on the `system.auth.ip` field.
+                  Only present if the GeoIP Elasticsearch plugin is available and
+                  used.
+                fields:
+                  - name: continent_name
+                    type: keyword
+                    description: >
+                      The name of the continent.
+                  - name: city_name
+                    type: keyword
+                    description: >
+                      The name of the city.
+                  - name: region_name
+                    type: keyword
+                    description: >
+                      The name of the region.
+                  - name: country_iso_code
+                    type: keyword
+                    description: >
+                      Country ISO code.
+                  - name: location
+                    type: geo_point
+                    description: >
+                      The longitude and latitude.
+                  - name: region_iso_code
+                    type: keyword
+                    description: >
+                      Region ISO code.
+            - name: sudo
+              type: group
+              description: >
+                Fields specific to events created by the `sudo` command.
+              fields:
+              - name: error
+                example: user NOT in sudoers
+                description: >
+                  The error message in case the sudo command failed.
+              - name: tty
+                description: >
+                  The TTY where the sudo command is executed.
+              - name: pwd
+                description: >
+                  The current directory where the sudo command is executed.
+              - name: user
+                example: root
+                description: >
+                  The target user to which the sudo command is switching.
+              - name: command
+                description: >
+                  The command executed via sudo.
+        
+            - name: useradd
+              type: group
+              description: >
+                Fields specific to events created by the `useradd` command.
+              fields:
+              - name: name
+                description: >
+                  The user name being added.
+              - name: uid
+                type: long
+                description:
+                  The user ID.
+              - name: gid
+                type: long
+                description:
+                  The group ID.
+              - name: home
+                description:
+                  The home folder for the new user.
+              - name: shell
+                description:
+                  The default shell for the new user.
+        
+            - name: groupadd
+              type: group
+              description: >
+                Fields specific to events created by the `groupadd` command.
+              fields:
+              - name: name
+                description: >
+                  The name of the new group.
+              - name: gid
+                type: long
+                description: >
+                  The ID of the new group.
+        - name: syslog
+          type: group
+          description: >
+            Contains fields from the syslog system logs.
+          fields:
+            - name: timestamp
+              description: >
+                The timestamp as read from the syslog message.
+            - name: hostname
+              description: >
+                The hostname as read from the syslog message.
+            - name: program
+              description: >
+                The process name as read from the syslog message.
+            - name: pid
+              description: >
+                The PID of the process that sent the syslog message.
+            - name: message
+              type: text
+              description: >
+                The message in the log line.
+- key: traefik
+  title: "Traefik"
+  description: >
+    Module for parsing the Traefik log files.
+  fields:
+    - name: traefik
+      type: group
+      description: >
+        Fields from the Traefik log files.
+      fields:
+        - name: access
+          type: group
+          description: >
+            Contains fields for the Traefik access logs.
+          fields:
+            - name: remote_ip
+              type: keyword
+              description: >
+                Client IP address.
+            - name: duration
+              type: long
+              description: >
+                Duration of the access entry.
+            - name: user_name
+              type: keyword
+              description: >
+                The user name used when basic authentication is used.
+            - name: user_identifier
+              type: keyword
+              description: >
+                Is the RFC 1413 identity of the client
+            - name: method
+              type: keyword
+              example: GET
+              description: >
+                The request HTTP method.
+            - name: url
+              type: keyword
+              description: >
+                The request HTTP URL.
+            - name: http_version
+              type: keyword
+              description: >
+                The HTTP version.
+            - name: response_code
+              type: long
+              description: >
+                The HTTP response code.
+            - name: body_sent.bytes
+              type: long
+              format: bytes
+              description: >
+                The number of bytes of the server response body.
+            - name: referrer
+              type: keyword
+              description: >
+                The HTTP referrer.
+            - name: agent
+              type: text
+              description: >
+                Contains the un-parsed user agent string. Only present if the user
+                agent Elasticsearch plugin is not available or not used.
+            - name: user_agent
+              type: group
+              description: >
+                Contains the parsed User agent field. Only present if the user
+                agent Elasticsearch plugin is available and used.
+              fields:
+                - name: device
+                  type: keyword
+                  description: >
+                    The name of the physical device.
+                - name: build
+                  type: keyword
+                  description: >
+                    The build of the user agent.
+                - name: major
+                  type: long
+                  description: >
+                    The major version of the user agent.
+                - name: minor
+                  type: long
+                  description: >
+                    The minor version of the user agent.
+                - name: patch
+                  type: keyword
+                  description: >
+                    The patch version of the user agent.
+                - name: name
+                  type: keyword
+                  example: Chrome
+                  description: >
+                    The name of the user agent.
+                - name: os
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: os_major
+                  type: long
+                  description: >
+                    The major version of the operating system.
+                - name: os_minor
+                  type: long
+                  description: >
+                    The minor version of the operating system.
+                - name: os_name
+                  type: keyword
+                  description: >
+                    The name of the operating system.
+                - name: original
+                  type: text
+                  index: false
+                  description: >
+                    Original user agent value before parsing by ingest-user-agent plugin.
+            - name: geoip
+              type: group
+              description: >
+                Contains GeoIP information gathered based on the remote_ip field.
+                Only present if the GeoIP Elasticsearch plugin is available and
+                used.
+              fields:
+                - name: continent_name
+                  type: keyword
+                  description: >
+                    The name of the continent.
+                - name: country_iso_code
+                  type: keyword
+                  description: >
+                    Country ISO code.
+                - name: location
+                  type: geo_point
+                  description: >
+                    The longitude and latitude.
+                - name: region_name
+                  type: keyword
+                  description: >
+                    The region name.
+                - name: city_name
+                  type: keyword
+                  description: >
+                    The city name.
+                - name: region_iso_code
+                  type: keyword
+                  description: >
+                    Region ISO code.
+            - name: request_count
+              type: long
+              description: >
+                The number of requests
+            - name: frontend_name
+              type: text
+              description: >
+                The name of the frontend used
+            - name: backend_url
+              type: text
+              description:
+                The url of the backend where request is forwarded
+- key: iptables
+  title: iptables
+  description: >
+    Module for handling the iptables logs.
+  fields:
+    - name: iptables
+      type: group
+      description: >
+        Fields from the iptables logs.
+      fields:
+        - name: ether_type
+          type: long
+          description: >
+            Value of the ethernet type field identifying the network layer protocol.
+        
+        - name: flow_label
+          type: integer
+          description: >
+            IPv6 flow label.
+        
+        - name: fragment_flags
+          type: keyword
+          description: >
+            IP fragment flags. A combination of CE, DF and MF.
+        
+        - name: fragment_offset
+          type: long
+          description: >
+            Offset of the current IP fragment.
+        
+        - name: icmp
+          type: group
+          description: >
+            ICMP fields.
+          fields:
+        
+          - name: code
+            type: long
+            description: >
+              ICMP code.
+        
+          - name: id
+            type: long
+            description: >
+              ICMP ID.
+        
+          - name: parameter
+            type: long
+            description: >
+              ICMP parameter.
+        
+          - name: redirect
+            type: ip
+            description: >
+              ICMP redirect address.
+        
+          - name: seq
+            type: long
+            description: >
+              ICMP sequence number.
+        
+          - name: type
+            type: long
+            description: >
+              ICMP type.
+        
+        - name: id
+          type: long
+          description: >
+            Packet identifier.
+        
+        - name: incomplete_bytes
+          type: long
+          description: >
+            Number of incomplete bytes.
+        
+        - name: input_device
+          type: keyword
+          description: >
+            Device that received the packet.
+        
+        - name: precedence_bits
+          type: short
+          description: >
+            IP precedence bits.
+        
+        - name: tos
+          type: long
+          description: >
+              IP Type of Service field.
+        
+        - name: length
+          type: long
+          description: >
+            Packet length.
+        
+        - name: output_device
+          type: keyword
+          description: >
+            Device that output the packet.
+        
+        - name: tcp
+          type: group
+          description: >
+            TCP fields.
+          fields:
+        
+          - name: flags
+            type: keyword
+            description: >
+              TCP flags.
+        
+          - name: reserved_bits
+            type: short
+            description: >
+              TCP reserved bits.
+        
+          - name: seq
+            type: long
+            description: >
+              TCP sequence number.
+        
+          - name: ack
+            type: long
+            description: >
+              TCP Acknowledgment number.
+        
+          - name: window
+            type: long
+            description: >
+              Advertised TCP window size.
+        
+        - name: ttl
+          type: integer
+          description: >
+            Time To Live field.
+        
+        - name: udp
+          type: group
+          description: >
+            UDP fields.
+          fields:
+        
+          - name: length
+            type: long
+            description: >
+              Length of the UDP header and payload.
+        
+        - name: ubiquiti
+          type: group
+          description: >
+            Fields for Ubiquiti network devices.
+          fields:
+        
+            - name: input_zone
+              type: keyword
+              description: >
+                Input zone.
+        
+            - name: output_zone
+              type: keyword
+              description: >
+                Output zone.
+        
+            - name: rule_number
+              type: keyword
+              description:
+                The rule number within the rule set.
+        
+            - name: rule_set
+              type: keyword
+              description:
+                The rule set name.
+- key: suricata
+  title: Suricata
+  description: >
+    Module for handling the EVE JSON logs produced by Suricata.
+  fields:
+    - name: suricata
+      type: group
+      description: >
+        Fields from the Suricata EVE log file.
+      fields:
+        - name: eve
+          type: group
+          description: >
+            Fields exported by the EVE JSON logs
+          fields:
+            - name: event_type
+              type: keyword
+        
+            - name: app_proto_orig
+              type: keyword
+        
+            - name: tcp
+              type: group
+              fields:
+              - name: tcp_flags
+                type: keyword
+        
+              - name: psh
+                type: boolean
+        
+              - name: tcp_flags_tc
+                type: keyword
+        
+              - name: ack
+                type: boolean
+        
+              - name: syn
+                type: boolean
+        
+              - name: state
+                type: keyword
+        
+              - name: tcp_flags_ts
+                type: keyword
+        
+              - name: rst
+                type: boolean
+        
+              - name: fin
+                type: boolean
+        
+            - name: fileinfo
+              type: group
+              fields:
+              - name: sha1
+                type: keyword
+        
+              - name: filename
+                type: keyword
+        
+              - name: tx_id
+                type: long
+        
+              - name: state
+                type: keyword
+        
+              - name: stored
+                type: boolean
+        
+              - name: gaps
+                type: boolean
+        
+              - name: sha256
+                type: keyword
+        
+              - name: md5
+                type: keyword
+        
+              - name: size
+                type: long
+        
+            - name: icmp_type
+              type: long
+        
+            - name: dest_port
+              type: long
+        
+            - name: src_port
+              type: long
+        
+            - name: proto
+              type: keyword
+        
+            - name: pcap_cnt
+              type: long
+        
+            - name: src_ip
+              type: ip
+        
+            - name: dns
+              type: group
+              fields:
+              - name: type
+                type: keyword
+        
+              - name: rrtype
+                type: keyword
+        
+              - name: rrname
+                type: keyword
+        
+              - name: rdata
+                type: keyword
+        
+              - name: tx_id
+                type: long
+        
+              - name: ttl
+                type: long
+        
+              - name: rcode
+                type: keyword
+        
+              - name: id
+                type: long
+        
+            - name: flow_id
+              type: keyword
+        
+            - name: email
+              type: group
+              fields:
+              - name: status
+                type: keyword
+        
+            - name: dest_ip
+              type: ip
+        
+            - name: icmp_code
+              type: long
+        
+            - name: http
+              type: group
+              fields:
+              - name: status
+                type: long
+        
+              - name: redirect
+                type: keyword
+        
+              - name: http_user_agent
+                type: keyword
+        
+              - name: protocol
+                type: keyword
+        
+              - name: http_refer
+                type: keyword
+        
+              - name: url
+                type: keyword
+        
+              - name: hostname
+                type: keyword
+        
+              - name: length
+                type: long
+        
+              - name: http_method
+                type: keyword
+        
+              - name: http_content_type
+                type: keyword
+        
+            - name: timestamp
+              type: date
+        
+            - name: in_iface
+              type: keyword
+        
+            - name: alert
+              type: group
+              fields:
+              - name: category
+                type: keyword
+        
+              - name: severity
+                type: long
+        
+              - name: rev
+                type: long
+        
+              - name: gid
+                type: long
+        
+              - name: signature
+                type: keyword
+        
+              - name: action
+                type: keyword
+        
+              - name: signature_id
+                type: long
+        
+            - name: ssh
+              type: group
+              fields:
+              - name: client
+                type: group
+                fields:
+                - name: proto_version
+                  type: keyword
+        
+                - name: software_version
+                  type: keyword
+        
+              - name: server
+                type: group
+                fields:
+                - name: proto_version
+                  type: keyword
+        
+                - name: software_version
+                  type: keyword
+        
+            - name: stats
+              type: group
+              fields:
+              - name: capture
+                type: group
+                fields:
+                - name: kernel_packets
+                  type: long
+        
+                - name: kernel_drops
+                  type: long
+        
+                - name: kernel_ifdrops
+                  type: long
+        
+              - name: uptime
+                type: long
+        
+              - name: detect
+                type: group
+                fields:
+                - name: alert
+                  type: long
+        
+              - name: http
+                type: group
+                fields:
+                - name: memcap
+                  type: long
+        
+                - name: memuse
+                  type: long
+        
+              - name: file_store
+                type: group
+                fields:
+                - name: open_files
+                  type: long
+        
+              - name: defrag
+                type: group
+                fields:
+                - name: max_frag_hits
+                  type: long
+        
+                - name: ipv4
+                  type: group
+                  fields:
+                  - name: timeouts
+                    type: long
+        
+                  - name: fragments
+                    type: long
+        
+                  - name: reassembled
+                    type: long
+        
+                - name: ipv6
+                  type: group
+                  fields:
+                  - name: timeouts
+                    type: long
+        
+                  - name: fragments
+                    type: long
+        
+                  - name: reassembled
+                    type: long
+        
+              - name: flow
+                type: group
+                fields:
+                - name: tcp_reuse
+                  type: long
+        
+                - name: udp
+                  type: long
+        
+                - name: memcap
+                  type: long
+        
+                - name: emerg_mode_entered
+                  type: long
+        
+                - name: emerg_mode_over
+                  type: long
+        
+                - name: tcp
+                  type: long
+        
+                - name: icmpv6
+                  type: long
+        
+                - name: icmpv4
+                  type: long
+        
+                - name: spare
+                  type: long
+        
+                - name: memuse
+                  type: long
+        
+              - name: tcp
+                type: group
+                fields:
+                - name: pseudo_failed
+                  type: long
+        
+                - name: ssn_memcap_drop
+                  type: long
+        
+                - name: insert_data_overlap_fail
+                  type: long
+        
+                - name: sessions
+                  type: long
+        
+                - name: pseudo
+                  type: long
+        
+                - name: synack
+                  type: long
+        
+                - name: insert_data_normal_fail
+                  type: long
+        
+                - name: syn
+                  type: long
+        
+                - name: memuse
+                  type: long
+        
+                - name: invalid_checksum
+                  type: long
+        
+                - name: segment_memcap_drop
+                  type: long
+        
+                - name: overlap
+                  type: long
+        
+                - name: insert_list_fail
+                  type: long
+        
+                - name: rst
+                  type: long
+        
+                - name: stream_depth_reached
+                  type: long
+        
+                - name: reassembly_memuse
+                  type: long
+        
+                - name: reassembly_gap
+                  type: long
+        
+                - name: overlap_diff_data
+                  type: long
+        
+                - name: no_flow
+                  type: long
+        
+              - name: decoder
+                type: group
+                fields:
+                - name: avg_pkt_size
+                  type: long
+        
+                - name: bytes
+                  type: long
+        
+                - name: tcp
+                  type: long
+        
+                - name: raw
+                  type: long
+        
+                - name: ppp
+                  type: long
+        
+                - name: vlan_qinq
+                  type: long
+        
+                - name: 'null'
+                  type: long
+        
+                - name: ltnull
+                  type: group
+                  fields:
+                  - name: unsupported_type
+                    type: long
+        
+                  - name: pkt_too_small
+                    type: long
+        
+                - name: invalid
+                  type: long
+        
+                - name: gre
+                  type: long
+        
+                - name: ipv4
+                  type: long
+        
+                - name: ipv6
+                  type: long
+        
+                - name: pkts
+                  type: long
+        
+                - name: ipv6_in_ipv6
+                  type: long
+        
+                - name: ipraw
+                  type: group
+                  fields:
+                  - name: invalid_ip_version
+                    type: long
+        
+                - name: pppoe
+                  type: long
+        
+                - name: udp
+                  type: long
+        
+                - name: dce
+                  type: group
+                  fields:
+                  - name: pkt_too_small
+                    type: long
+        
+                - name: vlan
+                  type: long
+        
+                - name: sctp
+                  type: long
+        
+                - name: max_pkt_size
+                  type: long
+        
+                - name: teredo
+                  type: long
+        
+                - name: mpls
+                  type: long
+        
+                - name: sll
+                  type: long
+        
+                - name: icmpv6
+                  type: long
+        
+                - name: icmpv4
+                  type: long
+        
+                - name: erspan
+                  type: long
+        
+                - name: ethernet
+                  type: long
+        
+                - name: ipv4_in_ipv6
+                  type: long
+        
+                - name: ieee8021ah
+                  type: long
+        
+              - name: dns
+                type: group
+                fields:
+                - name: memcap_global
+                  type: long
+        
+                - name: memcap_state
+                  type: long
+        
+                - name: memuse
+                  type: long
+        
+              - name: flow_mgr
+                type: group
+                fields:
+                - name: rows_busy
+                  type: long
+        
+                - name: flows_timeout
+                  type: long
+        
+                - name: flows_notimeout
+                  type: long
+        
+                - name: rows_skipped
+                  type: long
+        
+                - name: closed_pruned
+                  type: long
+        
+                - name: new_pruned
+                  type: long
+        
+                - name: flows_removed
+                  type: long
+        
+                - name: bypassed_pruned
+                  type: long
+        
+                - name: est_pruned
+                  type: long
+        
+                - name: flows_timeout_inuse
+                  type: long
+        
+                - name: flows_checked
+                  type: long
+        
+                - name: rows_maxlen
+                  type: long
+        
+                - name: rows_checked
+                  type: long
+        
+                - name: rows_empty
+                  type: long
+        
+              - name: app_layer
+                type: group
+                fields:
+                - name: flow
+                  type: group
+                  fields:
+                  - name: tls
+                    type: long
+        
+                  - name: ftp
+                    type: long
+        
+                  - name: http
+                    type: long
+        
+                  - name: failed_udp
+                    type: long
+        
+                  - name: dns_udp
+                    type: long
+        
+                  - name: dns_tcp
+                    type: long
+        
+                  - name: smtp
+                    type: long
+        
+                  - name: failed_tcp
+                    type: long
+        
+                  - name: msn
+                    type: long
+        
+                  - name: ssh
+                    type: long
+        
+                  - name: imap
+                    type: long
+        
+                  - name: dcerpc_udp
+                    type: long
+        
+                  - name: dcerpc_tcp
+                    type: long
+        
+                  - name: smb
+                    type: long
+        
+                - name: tx
+                  type: group
+                  fields:
+                  - name: tls
+                    type: long
+        
+                  - name: ftp
+                    type: long
+        
+                  - name: http
+                    type: long
+        
+                  - name: dns_udp
+                    type: long
+        
+                  - name: dns_tcp
+                    type: long
+        
+                  - name: smtp
+                    type: long
+        
+                  - name: ssh
+                    type: long
+        
+                  - name: dcerpc_udp
+                    type: long
+        
+                  - name: dcerpc_tcp
+                    type: long
+        
+                  - name: smb
+                    type: long
+        
+            - name: tls
+              type: group
+              fields:
+              - name: notbefore
+                type: date
+        
+              - name: issuerdn
+                type: keyword
+        
+              - name: sni
+                type: keyword
+        
+              - name: version
+                type: keyword
+        
+              - name: session_resumed
+                type: boolean
+        
+              - name: fingerprint
+                type: keyword
+        
+              - name: serial
+                type: keyword
+        
+              - name: notafter
+                type: date
+        
+              - name: subject
+                type: keyword
+        
+            - name: app_proto_ts
+              type: keyword
+        
+            - name: flow
+              type: group
+              fields:
+              - name: bytes_toclient
+                type: long
+        
+              - name: start
+                type: date
+        
+              - name: pkts_toclient
+                type: long
+        
+              - name: age
+                type: long
+        
+              - name: state
+                type: keyword
+        
+              - name: bytes_toserver
+                type: long
+        
+              - name: reason
+                type: keyword
+        
+              - name: pkts_toserver
+                type: long
+        
+              - name: end
+                type: date
+        
+              - name: alerted
+                type: boolean
+        
+            - name: app_proto
+              type: keyword
+        
+            - name: tx_id
+              type: long
+        
+            - name: app_proto_tc
+              type: keyword
+        
+            - name: smtp
+              type: group
+              fields:
+              - name: rcpt_to
+                type: keyword
+        
+              - name: mail_from
+                type: keyword
+        
+              - name: helo
+                type: keyword
+        
+            - name: app_proto_expected
+              type: keyword
+        
+            - name: flags
+              type: group
+              fields:
+- key: netflow
+  title: "NetFlow"
+  description: >
+    Fields from NetFlow and IPFIX flows.
+  fields:
+    - name: netflow
+      type: group
+      description: >
+        Fields from NetFlow and IPFIX.
+      fields:
+        - name: type
+          type: keyword
+          description: >
+            The type of NetFlow record described by this event.
+
+        - name: exporter
+          type: group
+          description: >
+            Metadata related to the exporter device that generated this record.
+          fields:
+            - name: address
+              type: keyword
+              description: >
+                Exporter's network address in IP:port format.
+
+            - name: source_id
+              type: long
+              description: >
+                Observation domain ID to which this record belongs.
+
+            - name: timestamp
+              type: date
+              description: >
+                Time and date of export.
+
+            - name: uptime_millis
+              type: long
+              description: >
+                How long the exporter process has been running, in milliseconds.
+
+            - name: version
+              type: long
+              description: >
+                NetFlow version used.
+
+        - name: octet_delta_count
+          type: long
+
+        - name: packet_delta_count
+          type: long
+
+        - name: delta_flow_count
+          type: long
+
+        - name: protocol_identifier
+          type: short
+
+        - name: ip_class_of_service
+          type: short
+
+        - name: tcp_control_bits
+          type: integer
+
+        - name: source_transport_port
+          type: integer
+
+        - name: source_ipv4_address
+          type: ip
+
+        - name: source_ipv4_prefix_length
+          type: short
+
+        - name: ingress_interface
+          type: long
+
+        - name: destination_transport_port
+          type: integer
+
+        - name: destination_ipv4_address
+          type: ip
+
+        - name: destination_ipv4_prefix_length
+          type: short
+
+        - name: egress_interface
+          type: long
+
+        - name: ip_next_hop_ipv4_address
+          type: ip
+
+        - name: bgp_source_as_number
+          type: long
+
+        - name: bgp_destination_as_number
+          type: long
+
+        - name: bgp_next_hop_ipv4_address
+          type: ip
+
+        - name: post_mcast_packet_delta_count
+          type: long
+
+        - name: post_mcast_octet_delta_count
+          type: long
+
+        - name: flow_end_sys_up_time
+          type: long
+
+        - name: flow_start_sys_up_time
+          type: long
+
+        - name: post_octet_delta_count
+          type: long
+
+        - name: post_packet_delta_count
+          type: long
+
+        - name: minimum_ip_total_length
+          type: long
+
+        - name: maximum_ip_total_length
+          type: long
+
+        - name: source_ipv6_address
+          type: ip
+
+        - name: destination_ipv6_address
+          type: ip
+
+        - name: source_ipv6_prefix_length
+          type: short
+
+        - name: destination_ipv6_prefix_length
+          type: short
+
+        - name: flow_label_ipv6
+          type: long
+
+        - name: icmp_type_code_ipv4
+          type: integer
+
+        - name: igmp_type
+          type: short
+
+        - name: sampling_interval
+          type: long
+
+        - name: sampling_algorithm
+          type: short
+
+        - name: flow_active_timeout
+          type: integer
+
+        - name: flow_idle_timeout
+          type: integer
+
+        - name: engine_type
+          type: short
+
+        - name: engine_id
+          type: short
+
+        - name: exported_octet_total_count
+          type: long
+
+        - name: exported_message_total_count
+          type: long
+
+        - name: exported_flow_record_total_count
+          type: long
+
+        - name: ipv4_router_sc
+          type: ip
+
+        - name: source_ipv4_prefix
+          type: ip
+
+        - name: destination_ipv4_prefix
+          type: ip
+
+        - name: mpls_top_label_type
+          type: short
+
+        - name: mpls_top_label_ipv4_address
+          type: ip
+
+        - name: sampler_id
+          type: short
+
+        - name: sampler_mode
+          type: short
+
+        - name: sampler_random_interval
+          type: long
+
+        - name: class_id
+          type: short
+
+        - name: minimum_ttl
+          type: short
+
+        - name: maximum_ttl
+          type: short
+
+        - name: fragment_identification
+          type: long
+
+        - name: post_ip_class_of_service
+          type: short
+
+        - name: source_mac_address
+          type: keyword
+
+        - name: post_destination_mac_address
+          type: keyword
+
+        - name: vlan_id
+          type: integer
+
+        - name: post_vlan_id
+          type: integer
+
+        - name: ip_version
+          type: short
+
+        - name: flow_direction
+          type: short
+
+        - name: ip_next_hop_ipv6_address
+          type: ip
+
+        - name: bgp_next_hop_ipv6_address
+          type: ip
+
+        - name: ipv6_extension_headers
+          type: long
+
+        - name: mpls_top_label_stack_section
+          type: short
+
+        - name: mpls_label_stack_section2
+          type: short
+
+        - name: mpls_label_stack_section3
+          type: short
+
+        - name: mpls_label_stack_section4
+          type: short
+
+        - name: mpls_label_stack_section5
+          type: short
+
+        - name: mpls_label_stack_section6
+          type: short
+
+        - name: mpls_label_stack_section7
+          type: short
+
+        - name: mpls_label_stack_section8
+          type: short
+
+        - name: mpls_label_stack_section9
+          type: short
+
+        - name: mpls_label_stack_section10
+          type: short
+
+        - name: destination_mac_address
+          type: keyword
+
+        - name: post_source_mac_address
+          type: keyword
+
+        - name: interface_name
+          type: keyword
+
+        - name: interface_description
+          type: keyword
+
+        - name: sampler_name
+          type: keyword
+
+        - name: octet_total_count
+          type: long
+
+        - name: packet_total_count
+          type: long
+
+        - name: flags_and_sampler_id
+          type: long
+
+        - name: fragment_offset
+          type: integer
+
+        - name: forwarding_status
+          type: short
+
+        - name: mpls_vpn_route_distinguisher
+          type: short
+
+        - name: mpls_top_label_prefix_length
+          type: short
+
+        - name: src_traffic_index
+          type: long
+
+        - name: dst_traffic_index
+          type: long
+
+        - name: application_description
+          type: keyword
+
+        - name: application_id
+          type: short
+
+        - name: application_name
+          type: keyword
+
+        - name: post_ip_diff_serv_code_point
+          type: short
+
+        - name: multicast_replication_factor
+          type: long
+
+        - name: class_name
+          type: keyword
+
+        - name: classification_engine_id
+          type: short
+
+        - name: layer2packet_section_offset
+          type: integer
+
+        - name: layer2packet_section_size
+          type: integer
+
+        - name: layer2packet_section_data
+          type: short
+
+        - name: bgp_next_adjacent_as_number
+          type: long
+
+        - name: bgp_prev_adjacent_as_number
+          type: long
+
+        - name: exporter_ipv4_address
+          type: ip
+
+        - name: exporter_ipv6_address
+          type: ip
+
+        - name: dropped_octet_delta_count
+          type: long
+
+        - name: dropped_packet_delta_count
+          type: long
+
+        - name: dropped_octet_total_count
+          type: long
+
+        - name: dropped_packet_total_count
+          type: long
+
+        - name: flow_end_reason
+          type: short
+
+        - name: common_properties_id
+          type: long
+
+        - name: observation_point_id
+          type: long
+
+        - name: icmp_type_code_ipv6
+          type: integer
+
+        - name: mpls_top_label_ipv6_address
+          type: ip
+
+        - name: line_card_id
+          type: long
+
+        - name: port_id
+          type: long
+
+        - name: metering_process_id
+          type: long
+
+        - name: exporting_process_id
+          type: long
+
+        - name: template_id
+          type: integer
+
+        - name: wlan_channel_id
+          type: short
+
+        - name: wlan_ssid
+          type: keyword
+
+        - name: flow_id
+          type: long
+
+        - name: observation_domain_id
+          type: long
+
+        - name: flow_start_seconds
+          type: date
+
+        - name: flow_end_seconds
+          type: date
+
+        - name: flow_start_milliseconds
+          type: date
+
+        - name: flow_end_milliseconds
+          type: date
+
+        - name: flow_start_microseconds
+          type: date
+
+        - name: flow_end_microseconds
+          type: date
+
+        - name: flow_start_nanoseconds
+          type: date
+
+        - name: flow_end_nanoseconds
+          type: date
+
+        - name: flow_start_delta_microseconds
+          type: long
+
+        - name: flow_end_delta_microseconds
+          type: long
+
+        - name: system_init_time_milliseconds
+          type: date
+
+        - name: flow_duration_milliseconds
+          type: long
+
+        - name: flow_duration_microseconds
+          type: long
+
+        - name: observed_flow_total_count
+          type: long
+
+        - name: ignored_packet_total_count
+          type: long
+
+        - name: ignored_octet_total_count
+          type: long
+
+        - name: not_sent_flow_total_count
+          type: long
+
+        - name: not_sent_packet_total_count
+          type: long
+
+        - name: not_sent_octet_total_count
+          type: long
+
+        - name: destination_ipv6_prefix
+          type: ip
+
+        - name: source_ipv6_prefix
+          type: ip
+
+        - name: post_octet_total_count
+          type: long
+
+        - name: post_packet_total_count
+          type: long
+
+        - name: flow_key_indicator
+          type: long
+
+        - name: post_mcast_packet_total_count
+          type: long
+
+        - name: post_mcast_octet_total_count
+          type: long
+
+        - name: icmp_type_ipv4
+          type: short
+
+        - name: icmp_code_ipv4
+          type: short
+
+        - name: icmp_type_ipv6
+          type: short
+
+        - name: icmp_code_ipv6
+          type: short
+
+        - name: udp_source_port
+          type: integer
+
+        - name: udp_destination_port
+          type: integer
+
+        - name: tcp_source_port
+          type: integer
+
+        - name: tcp_destination_port
+          type: integer
+
+        - name: tcp_sequence_number
+          type: long
+
+        - name: tcp_acknowledgement_number
+          type: long
+
+        - name: tcp_window_size
+          type: integer
+
+        - name: tcp_urgent_pointer
+          type: integer
+
+        - name: tcp_header_length
+          type: short
+
+        - name: ip_header_length
+          type: short
+
+        - name: total_length_ipv4
+          type: integer
+
+        - name: payload_length_ipv6
+          type: integer
+
+        - name: ip_ttl
+          type: short
+
+        - name: next_header_ipv6
+          type: short
+
+        - name: mpls_payload_length
+          type: long
+
+        - name: ip_diff_serv_code_point
+          type: short
+
+        - name: ip_precedence
+          type: short
+
+        - name: fragment_flags
+          type: short
+
+        - name: octet_delta_sum_of_squares
+          type: long
+
+        - name: octet_total_sum_of_squares
+          type: long
+
+        - name: mpls_top_label_ttl
+          type: short
+
+        - name: mpls_label_stack_length
+          type: long
+
+        - name: mpls_label_stack_depth
+          type: long
+
+        - name: mpls_top_label_exp
+          type: short
+
+        - name: ip_payload_length
+          type: long
+
+        - name: udp_message_length
+          type: integer
+
+        - name: is_multicast
+          type: short
+
+        - name: ipv4_ihl
+          type: short
+
+        - name: ipv4_options
+          type: long
+
+        - name: tcp_options
+          type: long
+
+        - name: padding_octets
+          type: short
+
+        - name: collector_ipv4_address
+          type: ip
+
+        - name: collector_ipv6_address
+          type: ip
+
+        - name: export_interface
+          type: long
+
+        - name: export_protocol_version
+          type: short
+
+        - name: export_transport_protocol
+          type: short
+
+        - name: collector_transport_port
+          type: integer
+
+        - name: exporter_transport_port
+          type: integer
+
+        - name: tcp_syn_total_count
+          type: long
+
+        - name: tcp_fin_total_count
+          type: long
+
+        - name: tcp_rst_total_count
+          type: long
+
+        - name: tcp_psh_total_count
+          type: long
+
+        - name: tcp_ack_total_count
+          type: long
+
+        - name: tcp_urg_total_count
+          type: long
+
+        - name: ip_total_length
+          type: long
+
+        - name: post_nast_ource_ipv4_address
+          type: ip
+
+        - name: post_nadt_estination_ipv4_address
+          type: ip
+
+        - name: post_napst_ource_transport_port
+          type: integer
+
+        - name: post_napdt_estination_transport_port
+          type: integer
+
+        - name: nat_originating_address_realm
+          type: short
+
+        - name: nat_event
+          type: short
+
+        - name: initiator_octets
+          type: long
+
+        - name: responder_octets
+          type: long
+
+        - name: firewall_event
+          type: short
+
+        - name: ingress_vrfid
+          type: long
+
+        - name: egress_vrfid
+          type: long
+
+        - name: vr_fname
+          type: keyword
+
+        - name: post_mpls_top_label_exp
+          type: short
+
+        - name: tcp_window_scale
+          type: integer
+
+        - name: biflow_direction
+          type: short
+
+        - name: ethernet_header_length
+          type: short
+
+        - name: ethernet_payload_length
+          type: integer
+
+        - name: ethernet_total_length
+          type: integer
+
+        - name: dot1q_vlan_id
+          type: integer
+
+        - name: dot1q_priority
+          type: short
+
+        - name: dot1q_customer_vlan_id
+          type: integer
+
+        - name: dot1q_customer_priority
+          type: short
+
+        - name: metro_evc_id
+          type: keyword
+
+        - name: metro_evc_type
+          type: short
+
+        - name: pseudo_wire_id
+          type: long
+
+        - name: pseudo_wire_type
+          type: integer
+
+        - name: pseudo_wire_control_word
+          type: long
+
+        - name: ingress_physical_interface
+          type: long
+
+        - name: egress_physical_interface
+          type: long
+
+        - name: post_dot1q_vlan_id
+          type: integer
+
+        - name: post_dot1q_customer_vlan_id
+          type: integer
+
+        - name: ethernet_type
+          type: integer
+
+        - name: post_ip_precedence
+          type: short
+
+        - name: collection_time_milliseconds
+          type: date
+
+        - name: export_sctp_stream_id
+          type: integer
+
+        - name: max_export_seconds
+          type: date
+
+        - name: max_flow_end_seconds
+          type: date
+
+        - name: message_md5_checksum
+          type: short
+
+        - name: message_scope
+          type: short
+
+        - name: min_export_seconds
+          type: date
+
+        - name: min_flow_start_seconds
+          type: date
+
+        - name: opaque_octets
+          type: short
+
+        - name: session_scope
+          type: short
+
+        - name: max_flow_end_microseconds
+          type: date
+
+        - name: max_flow_end_milliseconds
+          type: date
+
+        - name: max_flow_end_nanoseconds
+          type: date
+
+        - name: min_flow_start_microseconds
+          type: date
+
+        - name: min_flow_start_milliseconds
+          type: date
+
+        - name: min_flow_start_nanoseconds
+          type: date
+
+        - name: collector_certificate
+          type: short
+
+        - name: exporter_certificate
+          type: short
+
+        - name: data_records_reliability
+          type: boolean
+
+        - name: observation_point_type
+          type: short
+
+        - name: new_connection_delta_count
+          type: long
+
+        - name: connection_sum_duration_seconds
+          type: long
+
+        - name: connection_transaction_id
+          type: long
+
+        - name: post_nast_ource_ipv6_address
+          type: ip
+
+        - name: post_nadt_estination_ipv6_address
+          type: ip
+
+        - name: nat_pool_id
+          type: long
+
+        - name: nat_pool_name
+          type: keyword
+
+        - name: anonymization_flags
+          type: integer
+
+        - name: anonymization_technique
+          type: integer
+
+        - name: information_element_index
+          type: integer
+
+        - name: p2p_technology
+          type: keyword
+
+        - name: tunnel_technology
+          type: keyword
+
+        - name: encrypted_technology
+          type: keyword
+
+        - name: bgp_validity_state
+          type: short
+
+        - name: ip_sec_spi
+          type: long
+
+        - name: gre_key
+          type: long
+
+        - name: nat_type
+          type: short
+
+        - name: initiator_packets
+          type: long
+
+        - name: responder_packets
+          type: long
+
+        - name: observation_domain_name
+          type: keyword
+
+        - name: selection_sequence_id
+          type: long
+
+        - name: selector_id
+          type: long
+
+        - name: information_element_id
+          type: integer
+
+        - name: selector_algorithm
+          type: integer
+
+        - name: sampling_packet_interval
+          type: long
+
+        - name: sampling_packet_space
+          type: long
+
+        - name: sampling_time_interval
+          type: long
+
+        - name: sampling_time_space
+          type: long
+
+        - name: sampling_size
+          type: long
+
+        - name: sampling_population
+          type: long
+
+        - name: sampling_probability
+          type: double
+
+        - name: data_link_frame_size
+          type: integer
+
+        - name: ip_header_packet_section
+          type: short
+
+        - name: ip_payload_packet_section
+          type: short
+
+        - name: data_link_frame_section
+          type: short
+
+        - name: mpls_label_stack_section
+          type: short
+
+        - name: mpls_payload_packet_section
+          type: short
+
+        - name: selector_id_total_pkts_observed
+          type: long
+
+        - name: selector_id_total_pkts_selected
+          type: long
+
+        - name: absolute_error
+          type: double
+
+        - name: relative_error
+          type: double
+
+        - name: observation_time_seconds
+          type: date
+
+        - name: observation_time_milliseconds
+          type: date
+
+        - name: observation_time_microseconds
+          type: date
+
+        - name: observation_time_nanoseconds
+          type: date
+
+        - name: digest_hash_value
+          type: long
+
+        - name: hash_ipp_ayload_offset
+          type: long
+
+        - name: hash_ipp_ayload_size
+          type: long
+
+        - name: hash_output_range_min
+          type: long
+
+        - name: hash_output_range_max
+          type: long
+
+        - name: hash_selected_range_min
+          type: long
+
+        - name: hash_selected_range_max
+          type: long
+
+        - name: hash_digest_output
+          type: boolean
+
+        - name: hash_initialiser_value
+          type: long
+
+        - name: selector_name
+          type: keyword
+
+        - name: upper_cli_imit
+          type: double
+
+        - name: lower_cli_imit
+          type: double
+
+        - name: confidence_level
+          type: double
+
+        - name: information_element_data_type
+          type: short
+
+        - name: information_element_description
+          type: keyword
+
+        - name: information_element_name
+          type: keyword
+
+        - name: information_element_range_begin
+          type: long
+
+        - name: information_element_range_end
+          type: long
+
+        - name: information_element_semantics
+          type: short
+
+        - name: information_element_units
+          type: integer
+
+        - name: private_enterprise_number
+          type: long
+
+        - name: virtual_station_interface_id
+          type: short
+
+        - name: virtual_station_interface_name
+          type: keyword
+
+        - name: virtual_station_uuid
+          type: short
+
+        - name: virtual_station_name
+          type: keyword
+
+        - name: layer2_segment_id
+          type: long
+
+        - name: layer2_octet_delta_count
+          type: long
+
+        - name: layer2_octet_total_count
+          type: long
+
+        - name: ingress_unicast_packet_total_count
+          type: long
+
+        - name: ingress_multicast_packet_total_count
+          type: long
+
+        - name: ingress_broadcast_packet_total_count
+          type: long
+
+        - name: egress_unicast_packet_total_count
+          type: long
+
+        - name: egress_broadcast_packet_total_count
+          type: long
+
+        - name: monitoring_interval_start_milli_seconds
+          type: date
+
+        - name: monitoring_interval_end_milli_seconds
+          type: date
+
+        - name: port_range_start
+          type: integer
+
+        - name: port_range_end
+          type: integer
+
+        - name: port_range_step_size
+          type: integer
+
+        - name: port_range_num_ports
+          type: integer
+
+        - name: sta_mac_address
+          type: keyword
+
+        - name: sta_ipv4_address
+          type: ip
+
+        - name: wtp_mac_address
+          type: keyword
+
+        - name: ingress_interface_type
+          type: long
+
+        - name: egress_interface_type
+          type: long
+
+        - name: rtp_sequence_number
+          type: integer
+
+        - name: user_name
+          type: keyword
+
+        - name: application_category_name
+          type: keyword
+
+        - name: application_sub_category_name
+          type: keyword
+
+        - name: application_group_name
+          type: keyword
+
+        - name: original_flows_present
+          type: long
+
+        - name: original_flows_initiated
+          type: long
+
+        - name: original_flows_completed
+          type: long
+
+        - name: distinct_count_of_sourc_eipa_ddress
+          type: long
+
+        - name: distinct_count_of_destinatio_nipa_ddress
+          type: long
+
+        - name: distinct_count_of_source_ipv4_address
+          type: long
+
+        - name: distinct_count_of_destination_ipv4_address
+          type: long
+
+        - name: distinct_count_of_source_ipv6_address
+          type: long
+
+        - name: distinct_count_of_destination_ipv6_address
+          type: long
+
+        - name: value_distribution_method
+          type: short
+
+        - name: rfc3550_jitter_milliseconds
+          type: long
+
+        - name: rfc3550_jitter_microseconds
+          type: long
+
+        - name: rfc3550_jitter_nanoseconds
+          type: long
+
+        - name: dot1q_dei
+          type: boolean
+
+        - name: dot1q_customer_dei
+          type: boolean
+
+        - name: flow_selector_algorithm
+          type: integer
+
+        - name: flow_selected_octet_delta_count
+          type: long
+
+        - name: flow_selected_packet_delta_count
+          type: long
+
+        - name: flow_selected_flow_delta_count
+          type: long
+
+        - name: selector_itd_otal_flows_observed
+          type: long
+
+        - name: selector_itd_otal_flows_selected
+          type: long
+
+        - name: sampling_flow_interval
+          type: long
+
+        - name: sampling_flow_spacing
+          type: long
+
+        - name: flow_sampling_time_interval
+          type: long
+
+        - name: flow_sampling_time_spacing
+          type: long
+
+        - name: hash_flow_domain
+          type: integer
+
+        - name: transport_octet_delta_count
+          type: long
+
+        - name: transport_packet_delta_count
+          type: long
+
+        - name: original_exporter_ipv4_address
+          type: ip
+
+        - name: original_exporter_ipv6_address
+          type: ip
+
+        - name: original_observation_domain_id
+          type: long
+
+        - name: intermediate_process_id
+          type: long
+
+        - name: ignored_data_record_total_count
+          type: long
+
+        - name: data_link_frame_type
+          type: integer
+
+        - name: section_offset
+          type: integer
+
+        - name: section_exported_octets
+          type: integer
+
+        - name: dot1q_service_instance_tag
+          type: short
+
+        - name: dot1q_service_instance_id
+          type: long
+
+        - name: dot1q_service_instance_priority
+          type: short
+
+        - name: dot1q_customer_source_mac_address
+          type: keyword
+
+        - name: dot1q_customer_destination_mac_address
+          type: keyword
+
+        - name: post_layer2_octet_delta_count
+          type: long
+
+        - name: post_mcast_layer2_octet_delta_count
+          type: long
+
+        - name: post_layer2_octet_total_count
+          type: long
+
+        - name: post_mcast_layer2_octet_total_count
+          type: long
+
+        - name: minimum_layer2_total_length
+          type: long
+
+        - name: maximum_layer2_total_length
+          type: long
+
+        - name: dropped_layer2_octet_delta_count
+          type: long
+
+        - name: dropped_layer2_octet_total_count
+          type: long
+
+        - name: ignored_layer2_octet_total_count
+          type: long
+
+        - name: not_sent_layer2_octet_total_count
+          type: long
+
+        - name: layer2_octet_delta_sum_of_squares
+          type: long
+
+        - name: layer2_octet_total_sum_of_squares
+          type: long
+
+        - name: layer2_frame_delta_count
+          type: long
+
+        - name: layer2_frame_total_count
+          type: long
+
+        - name: pseudo_wire_destination_ipv4_address
+          type: ip
+
+        - name: ignored_layer2_frame_total_count
+          type: long
+
+        - name: mib_object_value_integer
+          type: integer
+
+        - name: mib_object_value_octet_string
+          type: short
+
+        - name: mib_object_value_oid
+          type: short
+
+        - name: mib_object_value_bits
+          type: short
+
+        - name: mib_object_valuei_pa_ddress
+          type: ip
+
+        - name: mib_object_value_counter
+          type: long
+
+        - name: mib_object_value_gauge
+          type: long
+
+        - name: mib_object_value_time_ticks
+          type: long
+
+        - name: mib_object_value_unsigned
+          type: long
+
+        - name: mib_object_identifier
+          type: short
+
+        - name: mib_sub_identifier
+          type: long
+
+        - name: mib_index_indicator
+          type: long
+
+        - name: mib_capture_time_semantics
+          type: short
+
+        - name: mib_context_engine_id
+          type: short
+
+        - name: mib_context_name
+          type: keyword
+
+        - name: mib_object_name
+          type: keyword
+
+        - name: mib_object_description
+          type: keyword
+
+        - name: mib_object_syntax
+          type: keyword
+
+        - name: mib_module_name
+          type: keyword
+
+        - name: mobile_imsi
+          type: keyword
+
+        - name: mobile_msisdn
+          type: keyword
+
+        - name: http_status_code
+          type: integer
+
+        - name: source_transport_ports_limit
+          type: integer
+
+        - name: http_request_method
+          type: keyword
+
+        - name: http_request_host
+          type: keyword
+
+        - name: http_request_target
+          type: keyword
+
+        - name: http_message_version
+          type: keyword
+
+        - name: nat_instance_id
+          type: long
+
+        - name: internal_address_realm
+          type: short
+
+        - name: external_address_realm
+          type: short
+
+        - name: nat_quota_exceeded_event
+          type: long
+
+        - name: nat_threshold_event
+          type: long
+
+        - name: http_user_agent
+          type: keyword
+
+        - name: http_content_type
+          type: keyword
+
+        - name: http_reason_phrase
+          type: keyword
+
+        - name: max_session_entries
+          type: long
+
+        - name: max_bieb_ntries
+          type: long
+
+        - name: max_entries_per_user
+          type: long
+
+        - name: max_subscribers
+          type: long
+
+        - name: max_fragments_pending_reassembly
+          type: long
+
+        - name: address_pool_high_threshold
+          type: long
+
+        - name: address_pool_low_threshold
+          type: long
+
+        - name: address_port_mapping_high_threshold
+          type: long
+
+        - name: address_port_mapping_low_threshold
+          type: long
+
+        - name: address_port_mapping_per_user_high_threshold
+          type: long
+
+        - name: global_address_mapping_high_threshold
+          type: long
+
+        - name: vpn_identifier
+          type: short
