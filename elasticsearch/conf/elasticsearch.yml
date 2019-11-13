@@ -86,3 +86,28 @@ gateway.recover_after_nodes: 1
 # Require explicit names when deleting indices:
 #
 action.destructive_requires_name: true
+#
+# ---------------------------------- Custom -----------------------------------
+# X-Pack monitoring.
+#
+xpack.monitoring.collection.enabled: true
+# 
+# Slack action integration.
+#
+xpack.notification.slack:
+  account:
+    monitoring:
+      url: https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx
+#
+# Email action integration.
+#
+xpack.notification.email.account:
+  aws:
+    smtp:
+      auth: true
+      starttls.enable: true
+      starttls.required: true
+      host: email-smtp.us-west-2.amazonaws.com
+      port: 465
+      user: xxxxxxxx
+      password: xxxxxxxx
