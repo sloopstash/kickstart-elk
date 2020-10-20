@@ -1,0 +1,43 @@
+{
+  "description": "Pipeline for parsing docker logs",
+  "processors": [
+    {
+      "json":{
+        "field":"message"
+      }
+    },
+    {
+      "grok": {
+        "field":"message.log",
+        "patterns":[
+          "%{TIMESTAMP_ISO8601:docker.log.datetime} %{WORD:docker.log.level} %{GREEDYDATA:docker.log.message}"
+        ],
+        "ignore_missing":true
+      }
+    },
+    {
+      "date": {
+        "field":"message.time",
+        "target_field":"@timestamp",
+        "formats":["ISO8601"]
+      }
+    },
+    {
+      "set": {
+        "field": "docker.log.type",
+        "value": "{{message.stream}}"
+      }
+    },
+    {
+      "remove":{
+        "field": ["message","log","prospector","input"]
+      }
+    }
+  ],
+  "on_failure" : [{
+    "set" : {
+      "field" : "error.message",
+      "value" : "{{ _ingest.on_failure_message }}"
+    }
+  }]
+}

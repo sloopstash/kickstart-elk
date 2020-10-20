@@ -118,3 +118,27 @@
             - name: message
               type: text
               description: Complete error message.
+- key: docker
+  title: Docker
+  description: Docker Module
+  fields:
+    - name: docker
+      type: group
+      description: Fields associated with this module.
+      fields:
+        - name: log
+          type: group
+          description: Fields associated with this module.
+          fields:
+            - name: datetime
+              type: keyword
+              description: Timestamp of the log entry.
+            - name: type
+              type: keyword
+              description: Log type.
+            - name: level
+              type: keyword
+              description: Log level.
+            - name: message
+              type: text
+              description: Log message.

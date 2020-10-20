@@ -1,0 +1,7 @@
+module_version: 1.0
+var:
+  - name: paths
+    default:
+      - "/var/lib/docker/containers/*/*.log"
+ingest_pipeline: ingest/pipeline.json
+input: config/log.yml
