@@ -5,7 +5,7 @@ FROM sloopstash/amazonlinux:v1
 WORKDIR /tmp
 
 # install oracle java development kit.
-COPY downloads/jdk-8u131-linux-x64.rpm ./
+COPY jdk-8u131-linux-x64.rpm ./
 RUN set -x \
   && rpm -Uvh jdk-8u131-linux-x64.rpm \
   && rm -rf jdk-8u131-linux-x64.rpm
@@ -15,7 +15,7 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/elasticsearch elasticsearch
 
 # install elasticsearch.
-COPY downloads/elasticsearch-6.8.2.tar.gz ./
+COPY elasticsearch-6.8.2.tar.gz ./
 RUN set -x \
   && tar xvzf elasticsearch-6.8.2.tar.gz > /dev/null \
   && cp -r elasticsearch-6.8.2/* /usr/local/lib/elasticsearch/ \

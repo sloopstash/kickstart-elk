@@ -5,7 +5,7 @@ FROM sloopstash/amazonlinux:v1
 WORKDIR /tmp
 
 # install apm.
-COPY downloads/apm-server-6.8.2-linux-x86_64.tar.gz ./
+COPY apm-server-6.8.2-linux-x86_64.tar.gz ./
 RUN set -x \
   && tar xvzf apm-server-6.8.2-linux-x86_64.tar.gz > /dev/null \
   && mkdir /usr/local/lib/apm \

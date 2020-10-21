@@ -9,7 +9,7 @@ RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/kibana kibana
 
 # install kibana.
-COPY downloads/kibana-6.8.2-linux-x86_64.tar.gz ./
+COPY kibana-6.8.2-linux-x86_64.tar.gz ./
 RUN set -x \
   && sha1sum kibana-6.8.2-linux-x86_64.tar.gz \
   && tar xvzf kibana-6.8.2-linux-x86_64.tar.gz > /dev/null \
