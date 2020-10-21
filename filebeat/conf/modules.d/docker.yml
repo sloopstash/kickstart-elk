@@ -1,0 +1,9 @@
+- module: docker
+  log:
+    enabled: true
+    var.paths:
+      - "/var/lib/docker/containers/*/*.log"
+    input:
+      processors:
+        - add_docker_metadata:
+            host: "unix:///var/run/docker.sock"
