@@ -1,16 +1,16 @@
 - name: log
   type: group
-  description: Fields associated with log data.
+  description: Fields generated from Docker log pipeline.
   fields:
     - name: datetime
       type: keyword
-      description: Timestamp of the log entry.
+      description: Timestamp of the event.
     - name: type
       type: keyword
-      description: Log type.
+      description: Event type.
     - name: level
       type: keyword
-      description: Log level.
+      description: Level.
     - name: message
       type: text
-      description: Log message.
+      description: Message.

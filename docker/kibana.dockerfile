@@ -1,14 +1,14 @@
-# use base image.
+# Docker image to use.
 FROM sloopstash/amazonlinux:v1
 
-# switch work directory.
+# Switch work directory.
 WORKDIR /tmp
 
-# create user named kibana.
+# Create system user for Kibana.
 RUN set -x \
   && useradd -m -s /bin/bash -d /usr/local/lib/kibana kibana
 
-# install kibana.
+# Install Kibana.
 COPY kibana-6.8.2-linux-x86_64.tar.gz ./
 RUN set -x \
   && sha1sum kibana-6.8.2-linux-x86_64.tar.gz \
@@ -25,5 +25,5 @@ RUN set -x \
   && touch /opt/kibana/system/process.pid \
   && chown -R kibana:kibana /opt/kibana
 
-# switch work directory.
+# Switch work directory.
 WORKDIR /

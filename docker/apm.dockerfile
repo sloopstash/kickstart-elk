@@ -1,10 +1,10 @@
-# use base image.
+# Docker image to use.
 FROM sloopstash/amazonlinux:v1
 
-# switch work directory.
+# Switch work directory.
 WORKDIR /tmp
 
-# install apm.
+# Install APM.
 COPY apm-server-6.8.2-linux-x86_64.tar.gz ./
 RUN set -x \
   && tar xvzf apm-server-6.8.2-linux-x86_64.tar.gz > /dev/null \
@@ -18,5 +18,5 @@ RUN set -x \
   && mkdir /opt/apm/system \
   && touch /opt/apm/system/process.pid
 
-# switch work directory.
+# Switch work directory.
 WORKDIR /

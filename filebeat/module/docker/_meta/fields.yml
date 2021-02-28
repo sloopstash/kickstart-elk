@@ -1,6 +1,6 @@
 - key: docker
   title: Docker
-  description: Docker Module
+  description: Filebeat module to collect and push Docker log data to Logstash.
   fields:
     - name: docker
       type: group
