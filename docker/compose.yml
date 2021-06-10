@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   elasticsearch:
     image: sloopstash/elasticsearch:v1
@@ -9,14 +9,14 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
-      - /opt/kickstart-elk/supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
-      - /opt/kickstart-elk/elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
-      - /opt/kickstart-elk/elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
-      - /opt/kickstart-elk/elasticsearch/conf/jvm.options:/usr/local/lib/elasticsearch/config/jvm.options
-      - /opt/kickstart-elk/elasticsearch/data:/opt/elasticsearch/data
-      - /opt/kickstart-elk/elasticsearch/log:/opt/elasticsearch/log
-      - /opt/kickstart-elk/elasticsearch/system:/opt/elasticsearch/system
+      - ../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
+      - ../elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
+      - ../elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
+      - ../elasticsearch/conf/jvm.options:/usr/local/lib/elasticsearch/config/jvm.options
+      - ../elasticsearch/data:/opt/elasticsearch/data
+      - ../elasticsearch/log:/opt/elasticsearch/log
+      - ../elasticsearch/system:/opt/elasticsearch/system
     networks:
       elk-net:
         ipv4_address: 100.2.1.10
@@ -29,15 +29,15 @@ services:
       - "9600-9700:9600-9700"
       - "5044:5044"
     volumes:
-      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
-      - /opt/kickstart-elk/supervisor/conf/logstash.ini:/etc/supervisord.d/logstash.ini
-      - /opt/kickstart-elk/logstash/conf/logstash.yml:/usr/local/lib/logstash/config/logstash.yml
-      - /opt/kickstart-elk/logstash/conf/jvm.options:/usr/local/lib/logstash/config/jvm.options
-      - /opt/kickstart-elk/logstash/conf/pipelines.yml:/usr/local/lib/logstash/config/pipelines.yml
-      - /opt/kickstart-elk/logstash/conf/beats.conf:/opt/logstash/conf/beats.conf
-      - /opt/kickstart-elk/logstash/data:/opt/logstash/data
-      - /opt/kickstart-elk/logstash/log:/opt/logstash/log
-      - /opt/kickstart-elk/logstash/system:/opt/logstash/system
+      - ../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../supervisor/conf/logstash.ini:/etc/supervisord.d/logstash.ini
+      - ../logstash/conf/logstash.yml:/usr/local/lib/logstash/config/logstash.yml
+      - ../logstash/conf/jvm.options:/usr/local/lib/logstash/config/jvm.options
+      - ../logstash/conf/pipelines.yml:/usr/local/lib/logstash/config/pipelines.yml
+      - ../logstash/conf/beats.conf:/opt/logstash/conf/beats.conf
+      - ../logstash/data:/opt/logstash/data
+      - ../logstash/log:/opt/logstash/log
+      - ../logstash/system:/opt/logstash/system
     depends_on:
       - elasticsearch
     networks:
@@ -51,12 +51,12 @@ services:
     ports:
       - "5601:5601"
     volumes:
-      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
-      - /opt/kickstart-elk/supervisor/conf/kibana.ini:/etc/supervisord.d/kibana.ini
-      - /opt/kickstart-elk/kibana/conf/kibana.yml:/usr/local/lib/kibana/config/kibana.yml
-      - /opt/kickstart-elk/kibana/data:/opt/kibana/data
-      - /opt/kickstart-elk/kibana/log:/opt/kibana/log
-      - /opt/kickstart-elk/kibana/system:/opt/kibana/system
+      - ../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../supervisor/conf/kibana.ini:/etc/supervisord.d/kibana.ini
+      - ../kibana/conf/kibana.yml:/usr/local/lib/kibana/config/kibana.yml
+      - ../kibana/data:/opt/kibana/data
+      - ../kibana/log:/opt/kibana/log
+      - ../kibana/system:/opt/kibana/system
     depends_on:
       - elasticsearch
     networks:
@@ -70,12 +70,12 @@ services:
     ports:
       - "8200:8200"
     volumes:
-      - /opt/kickstart-elk/supervisor/conf/main.conf:/etc/supervisord.conf
-      - /opt/kickstart-elk/supervisor/conf/apm.ini:/etc/supervisord.d/apm.ini
-      - /opt/kickstart-elk/apm/conf/apm-server.yml:/usr/local/lib/apm/apm-server.yml
-      - /opt/kickstart-elk/apm/data:/opt/apm/data
-      - /opt/kickstart-elk/apm/log:/opt/apm/log
-      - /opt/kickstart-elk/apm/system:/opt/apm/system
+      - ../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../supervisor/conf/apm.ini:/etc/supervisord.d/apm.ini
+      - ../apm/conf/apm-server.yml:/usr/local/lib/apm/apm-server.yml
+      - ../apm/data:/opt/apm/data
+      - ../apm/log:/opt/apm/log
+      - ../apm/system:/opt/apm/system
     depends_on:
       - elasticsearch
       - logstash
