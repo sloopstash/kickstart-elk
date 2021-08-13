@@ -1,0 +1,88 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: sloopstash/elasticsearch:v1
+    container_name: elk-elasticsearch
+    privileged: true
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-elasticsearch
+    ports:
+      - "9200:9200"
+    volumes:
+      - ../../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../../supervisor/conf/elasticsearch.ini:/etc/supervisord.d/elasticsearch.ini
+      - ../../elasticsearch/conf/security-limits.conf:/etc/security/limits.d/10-elasticsearch-defaults.conf
+      - ../../elasticsearch/conf/elasticsearch.yml:/usr/local/lib/elasticsearch/config/elasticsearch.yml
+      - ../../elasticsearch/conf/jvm.options:/usr/local/lib/elasticsearch/config/jvm.options
+      - ../../elasticsearch/data:/opt/elasticsearch/data
+      - ../../elasticsearch/log:/opt/elasticsearch/log
+      - ../../elasticsearch/system:/opt/elasticsearch/system
+    networks:
+      elk-net:
+        ipv4_address: 100.2.1.10
+  logstash:
+    image: sloopstash/logstash:v1
+    container_name: elk-logstash
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-logstash
+    ports:
+      - "9600-9700:9600-9700"
+      - "5044:5044"
+    volumes:
+      - ../../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../../supervisor/conf/logstash.ini:/etc/supervisord.d/logstash.ini
+      - ../../logstash/conf/logstash.yml:/usr/local/lib/logstash/config/logstash.yml
+      - ../../logstash/conf/jvm.options:/usr/local/lib/logstash/config/jvm.options
+      - ../../logstash/conf/pipelines.yml:/usr/local/lib/logstash/config/pipelines.yml
+      - ../../logstash/conf/beats.conf:/opt/logstash/conf/beats.conf
+      - ../../logstash/data:/opt/logstash/data
+      - ../../logstash/log:/opt/logstash/log
+      - ../../logstash/system:/opt/logstash/system
+    depends_on:
+      - elasticsearch
+    networks:
+      elk-net:
+        ipv4_address: 100.2.1.20
+  kibana:
+    image: sloopstash/kibana:v1
+    container_name: elk-kibana
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-kibana
+    ports:
+      - "5601:5601"
+    volumes:
+      - ../../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../../supervisor/conf/kibana.ini:/etc/supervisord.d/kibana.ini
+      - ../../kibana/conf/kibana.yml:/usr/local/lib/kibana/config/kibana.yml
+      - ../../kibana/data:/opt/kibana/data
+      - ../../kibana/log:/opt/kibana/log
+      - ../../kibana/system:/opt/kibana/system
+    depends_on:
+      - elasticsearch
+    networks:
+      elk-net:
+        ipv4_address: 100.2.1.30
+  apm:
+    image: sloopstash/apm:v1
+    container_name: elk-apm
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: elk-apm
+    ports:
+      - "8200:8200"
+    volumes:
+      - ../../supervisor/conf/main.conf:/etc/supervisord.conf
+      - ../../supervisor/conf/apm.ini:/etc/supervisord.d/apm.ini
+      - ../../apm/conf/apm-server.yml:/usr/local/lib/apm/apm-server.yml
+      - ../../apm/data:/opt/apm/data
+      - ../../apm/log:/opt/apm/log
+      - ../../apm/system:/opt/apm/system
+    depends_on:
+      - elasticsearch
+      - logstash
+    networks:
+      elk-net:
+        ipv4_address: 100.2.1.40
+networks:
+  elk-net:
+    external:
+      name: elk-net
