@@ -16,7 +16,7 @@
   schedule: '@every 5s' # every 5 seconds from start of beat
 
   # Configure URLs to ping
-  urls: ["http://app.crm/health"]
+  urls: ["http://app.crm.dv/health","http://app.crm.qaa/health","http://app.crm.qab/health"]
 
   # Configure IP protocol types to ping on if hostnames are configured.
   # Ping all resolvable IPs if `mode` is `all`, or only one IP if `mode` is `any`.
@@ -28,7 +28,7 @@
   #proxy_url: ''
 
   # Total test connection and data exchange timeout
-  #timeout: 16s
+  timeout: 3s
 
   # Optional Authentication Credentials
   #username: ''
